@@ -35,6 +35,10 @@ struct TexmailApp: App {
 
             Button("Settings...") {
                 NSApp.activate(ignoringOtherApps: true)
+                // If window was closed, re-open it
+                if NSApp.windows.filter({ $0.isVisible }).isEmpty {
+                    NSApp.sendAction(Selector(("newWindowForTab:")), to: nil, from: nil)
+                }
             }
             .keyboardShortcut(",")
 
@@ -87,6 +91,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         if !flag {
             NSApp.activate(ignoringOtherApps: true)
+            NSApp.sendAction(Selector(("newWindowForTab:")), to: nil, from: nil)
         }
         return true
     }
