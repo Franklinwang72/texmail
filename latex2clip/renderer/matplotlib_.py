@@ -7,6 +7,7 @@ from io import BytesIO
 
 import matplotlib
 matplotlib.use("Agg")
+matplotlib.rcParams["mathtext.fontset"] = "cm"  # Computer Modern — classic LaTeX font
 import matplotlib.pyplot as plt
 from PIL import Image
 
