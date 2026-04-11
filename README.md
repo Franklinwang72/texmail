@@ -1,15 +1,14 @@
 # ∑ Taxmail
 
+[中文文档](README_CN.md)
+
 **Render LaTeX formulas for email — select, press shortcut, done.**
 
 Write math in plain text with `$...$` or `\[...\]`, select it, and Taxmail replaces the formulas with beautifully rendered images. Paste into any email client — Gmail, Apple Mail, Outlook — and your recipient sees real math, not code.
 
 ## Demo
 
-```
-Before:  "By Cauchy's formula $f(z) = \frac{1}{2\pi i}\oint \frac{f(w)}{w-z}dw$"
-After:   "By Cauchy's formula [rendered image]"
-```
+![Taxmail Demo](resources/demo.png)
 
 ## Install
 
@@ -137,7 +136,7 @@ rm -rf ~/.taxmail ~/Desktop/Taxmail.app ~/.config/latex2clip
 |--------|--------|-------|
 | Gmail (Chrome) | ✅ | Uses HTML with base64 images |
 | Apple Mail | ✅ | Uses RTFD with embedded images |
-| Outlook (web) | ⚠️ | May strip large inline images |
+| Outlook (web) | ✅ | Works with inline images |
 | Thunderbird | ✅ | Uses HTML |
 
 ## License
