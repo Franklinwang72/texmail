@@ -12,7 +12,7 @@ MACOS="$CONTENTS/MacOS"
 RESOURCES="$CONTENTS/Resources"
 
 echo "╔══════════════════════════════════════╗"
-echo "║     Building Texmail.app v$VERSION       ║"
+echo "║     Building Texmail.app v$VERSION   ║"
 echo "╚══════════════════════════════════════╝"
 
 # ── 1. Check Swift compiler + SDK ──
