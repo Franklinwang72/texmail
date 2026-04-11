@@ -52,6 +52,17 @@ class MatplotlibRenderer(BaseRenderer):
 
     def render(self, latex: str, mode: MathMode, config: RenderConfig) -> RenderedFormula:
         latex = _preprocess(latex)
+        # Collapse newlines — mathtext silently renders raw code if \n is present
+        latex = " ".join(latex.split())
+
+        # Pre-validate: try parsing with mathtext before rendering
+        # If it fails, raise immediately so fallback kicks in
+        from matplotlib.mathtext import MathTextParser
+        parser = MathTextParser("bitmap")
+        try:
+            parser.parse(f"${latex}$", dpi=72, prop=None)
+        except (ValueError, RuntimeError) as e:
+            raise ValueError(f"mathtext cannot parse: {e}") from e
 
         fontsize = config.font_size_pt
         if mode == MathMode.DISPLAY:
