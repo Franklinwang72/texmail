@@ -1,0 +1,25 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+dist/
+build/
+
+# macOS
+.DS_Store
+*.app
+
+# IDE
+.vscode/
+.idea/
+
+# Config (user-specific)
+*.log
+
+# Temp
+/tmp/
+.pytest_cache/
+*.egg-info/
+setup_app.py
+test_hotkey.py
