@@ -6,9 +6,9 @@
 
 Write math in plain text with `$...$` or `\[...\]`, select it, and Taxmail replaces the formulas with beautifully rendered images. Paste into any email client — Gmail, Apple Mail, Outlook — and your recipient sees real math, not code.
 
-## Demo
+## How to Use
 
-![Taxmail Demo](resources/demo.png)
+![How to Use](how_to_use.gif)
 
 ## Install
 
