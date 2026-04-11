@@ -131,20 +131,36 @@ def load_config() -> Config:
         return Config()
 
 
+import fcntl as _fcntl
+
+
+def _atomic_config_write(updater):
+    """Read-modify-write config.toml with file locking to prevent corruption."""
+    ensure_config()
+    with open(CONFIG_PATH, "r+") as f:
+        _fcntl.flock(f, _fcntl.LOCK_EX)
+        text = f.read()
+        text = updater(text)
+        f.seek(0)
+        f.write(text)
+        f.truncate()
+        _fcntl.flock(f, _fcntl.LOCK_UN)
+
+
 def save_hotkey(key: str, modifiers: list[str]) -> None:
     """Update key= and modifiers= lines under [hotkey], preserving comments."""
-    ensure_config()
     import re
-    text = CONFIG_PATH.read_text()
     mods_str = ", ".join(f'"{m}"' for m in modifiers)
 
-    if "[hotkey]" in text:
-        text = re.sub(r'key\s*=\s*"[^"]*"', f'key = "{key}"', text, count=1)
-        text = re.sub(r'modifiers\s*=\s*\[.*?\]', f'modifiers = [{mods_str}]', text, count=1)
-    else:
-        text += f'\n[hotkey]\nkey = "{key}"\nmodifiers = [{mods_str}]\n'
+    def updater(text):
+        if "[hotkey]" in text:
+            text = re.sub(r'key\s*=\s*"[^"]*"', f'key = "{key}"', text, count=1)
+            text = re.sub(r'modifiers\s*=\s*\[.*?\]', f'modifiers = [{mods_str}]', text, count=1)
+        else:
+            text += f'\n[hotkey]\nkey = "{key}"\nmodifiers = [{mods_str}]\n'
+        return text
 
-    CONFIG_PATH.write_text(text)
+    _atomic_config_write(updater)
 
 
 class ConfigManager:

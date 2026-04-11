@@ -16,8 +16,12 @@ func loadConfig() -> AppConfig {
     var currentSection = ""
     for line in content.components(separatedBy: "\n") {
         let trimmed = line.trimmingCharacters(in: .whitespaces)
-        if trimmed.hasPrefix("[") && trimmed.hasSuffix("]") {
+        // Skip comments and empty lines
+        if trimmed.isEmpty || trimmed.hasPrefix("#") { continue }
+        // Section header: [name] but not [[name]] (TOML array of tables)
+        if trimmed.hasPrefix("[") && trimmed.hasSuffix("]") && !trimmed.hasPrefix("[[") {
             currentSection = String(trimmed.dropFirst().dropLast())
+                .trimmingCharacters(in: .whitespaces)
             continue
         }
         guard let eqIdx = trimmed.firstIndex(of: "=") else { continue }
@@ -26,7 +30,10 @@ func loadConfig() -> AppConfig {
 
         func unquote(_ s: String) -> String {
             if s.hasPrefix("\"") && s.hasSuffix("\"") && s.count >= 2 {
+                // Handle escaped quotes inside
                 return String(s.dropFirst().dropLast())
+                    .replacingOccurrences(of: "\\\"", with: "\"")
+                    .replacingOccurrences(of: "\\\\", with: "\\")
             }
             return s
         }
@@ -104,6 +111,14 @@ func saveFontSize(_ size: Double) {
         var content = readConfig()
         if let range = content.range(of: #"font_size_pt\s*=\s*[\d.]+"#, options: .regularExpression) {
             content.replaceSubrange(range, with: "font_size_pt = \(size)")
+        } else if content.contains("[render]") {
+            // [render] section exists but no font_size_pt line — append it
+            if let idx = content.range(of: "[render]")?.upperBound {
+                content.insert(contentsOf: "\nfont_size_pt = \(size)", at: idx)
+            }
+        } else {
+            // No [render] section at all — create it
+            content += "\n[render]\nfont_size_pt = \(size)\n"
         }
         writeConfig(content)
     }

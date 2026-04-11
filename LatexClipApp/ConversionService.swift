@@ -118,7 +118,7 @@ class ConversionService {
             return (true, "✅ 转换完成")
         } else {
             let errMsg = (stderr + stdout).trimmingCharacters(in: .whitespacesAndNewlines)
-            if errMsg.contains("No LaTeX") || errMsg.contains("No LaTeX") {
+            if errMsg.contains("No LaTeX") || errMsg.contains("not found") {
                 return (false, "❌ 未检测到公式")
             }
             if errMsg.contains("empty") || errMsg.contains("为空") {

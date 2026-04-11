@@ -159,7 +159,9 @@ struct ContentView: View {
             let cfg = loadConfig()
             hotkeyKey = cfg.hotkeyKey
             hotkeyMods = cfg.hotkeyModifiers
-            fontSize = "\(Int(cfg.fontSizePt))"
+            fontSize = cfg.fontSizePt.truncatingRemainder(dividingBy: 1) == 0
+                ? "\(Int(cfg.fontSizePt))"
+                : String(format: "%.1f", cfg.fontSizePt)
         }
     }
 

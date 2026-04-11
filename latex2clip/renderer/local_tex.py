@@ -22,6 +22,7 @@ TEX_TEMPLATE = r"""\documentclass[preview,border=2pt]{{standalone}}
 \definecolor{{bgcolor}}{{HTML}}{{{bg_hex}}}
 \pagecolor{{bgcolor}}
 \color{{fgcolor}}
+\AtBeginDocument{{\fontsize{{{fontsize}pt}}{{{lineheight}pt}}\selectfont}}
 \begin{{document}}
 {content}
 \end{{document}}
@@ -77,7 +78,11 @@ class LocalTeXRenderer(BaseRenderer):
         fg_hex = config.fg_color.lstrip("#")
         bg_hex = "FFFFFF" if config.bg_color in ("transparent", "#FFFFFF") else config.bg_color.lstrip("#")
         content = f"${latex}$" if mode == MathMode.INLINE else f"\\[ {latex} \\]"
-        tex_source = TEX_TEMPLATE.format(fg_hex=fg_hex, bg_hex=bg_hex, content=content)
+        fontsize = config.font_size_pt
+        lineheight = fontsize * 1.2
+        tex_source = TEX_TEMPLATE.format(
+            fg_hex=fg_hex, bg_hex=bg_hex, content=content,
+            fontsize=fontsize, lineheight=lineheight)
 
         tex_bin_dir = str(Path(engine).parent)
         import os
