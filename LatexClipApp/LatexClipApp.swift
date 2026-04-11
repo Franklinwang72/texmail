@@ -45,7 +45,7 @@ struct TexmailApp: App {
     }
 }
 
-class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
+class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, ObservableObject {
     let hotkeyManager = HotkeyManager()
     let conversionService = ConversionService()
     @Published var launchAtLogin = false
@@ -68,6 +68,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
         checkLaunchAtLogin()
 
+        // Hide Dock icon — menu bar only
+        NSApp.setActivationPolicy(.accessory)
+
         // Show settings window on first launch
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.showSettings()
@@ -86,6 +89,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     // MARK: - Settings Window
 
     func showSettings() {
+        // Temporarily show in Dock so the window can get focus
+        NSApp.setActivationPolicy(.regular)
+
         if let window = settingsWindow {
             window.makeKeyAndOrderFront(nil)
             NSApp.activate(ignoringOtherApps: true)
@@ -102,7 +108,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         window.title = "Texmail"
         window.contentView = contentView
         window.center()
-        window.isReleasedWhenClosed = false  // Keep in memory when closed
+        window.isReleasedWhenClosed = false
+        window.delegate = self
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
         settingsWindow = window
@@ -136,6 +143,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         proc.waitUntilExit()
         let output = String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
         launchAtLogin = output.contains("Texmail")
+    }
+
+    // When settings window closes, hide Dock icon again
+    func windowWillClose(_ notification: Notification) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            NSApp.setActivationPolicy(.accessory)
+        }
     }
 
     private func onHotkeyFired() {
