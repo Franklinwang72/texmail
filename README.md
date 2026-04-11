@@ -23,7 +23,7 @@ Write math in plain text with `$...$` or `\[...\]`, select it, and Texmail repla
 ## How to Use
 
 <p align="center">
-  <img width="800" src="serre.gif" />
+  <img width="1000" src="serre.gif" />
 </p>
 
 ## Install

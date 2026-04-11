@@ -23,7 +23,7 @@
 ## 使用演示
 
 <p align="center">
-  <img width="800" src="serre.gif" />
+  <img width="1000" src="serre.gif" />
 </p>
 
 ## 安装
