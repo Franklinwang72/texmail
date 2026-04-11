@@ -1,14 +1,30 @@
-# ∑ Taxmail
+<p align="center">
+    <br> <a href="README.md">English</a> | <b>中文</b>
+</p>
 
-[English](README.md) | **中文**
+<h1 align="center">∑ Taxmail</h1>
 
-**在邮件中发送 LaTeX 公式 —— 选中文字，按快捷键，搞定。**
+<p align="center">
+    <em>在邮件中发送 LaTeX 公式 —— 选中文字，按快捷键，搞定。</em>
+</p>
+
+<p align="center">
+  <a href="LICENSE" target="_blank">
+    <img alt="MIT License" src="https://img.shields.io/github/license/Franklinwang72/taxmail.svg?style=flat-square" />
+  </a>
+  <img alt="Swift" src="https://img.shields.io/badge/-Swift-F05138?style=flat-square&logo=swift&logoColor=white" />
+  <img alt="Python" src="https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white" />
+  <img alt="macOS" src="https://img.shields.io/badge/-macOS%2013+-black?style=flat-square&logo=apple&logoColor=white" />
+  <img alt="LaTeX" src="https://img.shields.io/badge/-LaTeX-008080?style=flat-square&logo=latex&logoColor=white" />
+</p>
 
 用 `$...$` 或 `\[...\]` 写数学公式，选中文字，Taxmail 自动把公式渲染成图片。粘贴到任何邮件客户端 —— Gmail、Apple Mail、Outlook —— 收件人看到的就是排版好的数学公式。
 
 ## 使用演示
 
-![使用演示](how_to_use.gif)
+<p align="center">
+  <img width="800" src="how_to_use.gif" />
+</p>
 
 ## 安装
 
@@ -25,24 +41,16 @@ curl -fsSL https://raw.githubusercontent.com/Franklinwang72/taxmail/main/install
 - **Xcode 命令行工具** — `xcode-select --install`
 - **TeX**（可选，用于复杂公式）— `brew install --cask mactex-no-gui`
 
-## 使用方法
+## 功能特点
 
-### 方法一：快捷键（推荐）
-
-1. 在任意应用中写含 LaTeX 公式的文字
-2. **选中文字**
-3. 按 **⌘⇧L**（可在设置中自定义）
-4. 公式自动渲染并原地替换
-
-### 方法二：剪贴板
-
-1. **复制** 含公式的文字（⌘C）
-2. 在 Taxmail 窗口点 **Convert Clipboard**
-3. **粘贴** 到邮件中（⌘V）
-
-### 方法三：右键菜单
-
-1. 选中文字 → **右键** → **服务** → **Taxmail**
+1. **全局快捷键** — 在任意应用中选中文字，按 ⌘⇧L，公式原地渲染
+2. **多种 LaTeX 定界符** — `$...$`、`\(...\)`、`$$...$$`、`\[...\]`
+3. **自动检测 TeX** — 安装了 xelatex 时自动使用，支持完整 LaTeX 语法
+4. **可自定义** — 在 app 内修改快捷键、公式字号
+5. **邮件兼容** — 输出 HTML + RTFD，兼容 Gmail、Apple Mail、Outlook、Thunderbird
+6. **菜单栏图标** — 后台运行，随时待命
+7. **中日韩支持** — `\text{}` 中的中文可正常渲染
+8. **tikz-cd 支持** — 交换图可正常渲染
 
 ## 支持的 LaTeX 语法
 
@@ -56,27 +64,35 @@ curl -fsSL https://raw.githubusercontent.com/Franklinwang72/taxmail/main/install
 ### 渲染引擎
 
 - **matplotlib**（内置）— 处理常见数学符号：分式、积分、希腊字母、上下标
-- **xelatex**（自动检测）— 完整 LaTeX 支持，包括 `amsmath`、`tikz-cd`、中文 `\text{}`、`\begin{cases}` 等
+- **xelatex**（自动检测）— 完整 LaTeX 支持，包括 `amsmath`、`tikz-cd`、中文 `\text{}`、矩阵
 
 如果你装了 TeX，Taxmail 会自动在 matplotlib 渲染失败时切换到 xelatex。
 
-## 设置
-
-Taxmail 窗口可以：
-
-- **更改快捷键** — 点 "Change"，按下你想要的组合键
-- **设置公式字号** — 匹配邮件字号（如 12pt、14pt、16pt）
+## 配置
 
 设置保存在 `~/.config/latex2clip/config.toml`。
+
+```toml
+[hotkey]
+key = "L"
+modifiers = ["cmd", "shift"]
+
+[render]
+engine = "auto"        # auto | matplotlib | latex
+dpi = 300
+font_size_pt = 14.0
+fg_color = "#000000"
+bg_color = "#FFFFFF"
+```
 
 ## 邮件客户端兼容性
 
 | 客户端 | 状态 | 说明 |
 |--------|------|------|
-| Gmail (Chrome) | ✅ | 使用 HTML + base64 图片 |
-| Apple Mail | ✅ | 使用 RTFD 内嵌图片 |
-| Outlook (网页版) | ✅ | 支持行内图片 |
-| Thunderbird | ✅ | 使用 HTML |
+| Gmail (Chrome) | ✅ | HTML + base64 图片 |
+| Apple Mail | ✅ | RTFD 内嵌图片 |
+| Outlook | ✅ | 行内图片 |
+| Thunderbird | ✅ | HTML |
 
 ## 更新
 
@@ -92,4 +108,4 @@ rm -rf ~/.taxmail ~/Desktop/Taxmail.app ~/.config/latex2clip
 
 ## 开源协议
 
-MIT
+[MIT](./LICENSE)

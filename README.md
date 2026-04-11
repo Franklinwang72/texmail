@@ -1,14 +1,30 @@
-# ∑ Taxmail
+<p align="center">
+    <br> <b>English</b> | <a href="README_CN.md">中文</a>
+</p>
 
-**English** | [中文](README_CN.md)
+<h1 align="center">∑ Taxmail</h1>
 
-**Render LaTeX formulas for email — select, press shortcut, done.**
+<p align="center">
+    <em>Render LaTeX formulas for email — select, press shortcut, done.</em>
+</p>
+
+<p align="center">
+  <a href="LICENSE" target="_blank">
+    <img alt="MIT License" src="https://img.shields.io/github/license/Franklinwang72/taxmail.svg?style=flat-square" />
+  </a>
+  <img alt="Swift" src="https://img.shields.io/badge/-Swift-F05138?style=flat-square&logo=swift&logoColor=white" />
+  <img alt="Python" src="https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white" />
+  <img alt="macOS" src="https://img.shields.io/badge/-macOS%2013+-black?style=flat-square&logo=apple&logoColor=white" />
+  <img alt="LaTeX" src="https://img.shields.io/badge/-LaTeX-008080?style=flat-square&logo=latex&logoColor=white" />
+</p>
 
 Write math in plain text with `$...$` or `\[...\]`, select it, and Taxmail replaces the formulas with beautifully rendered images. Paste into any email client — Gmail, Apple Mail, Outlook — and your recipient sees real math, not code.
 
 ## How to Use
 
-![How to Use](how_to_use.gif)
+<p align="center">
+  <img width="800" src="how_to_use.gif" />
+</p>
 
 ## Install
 
@@ -25,24 +41,16 @@ This installs Taxmail to your Desktop. Double-click to launch.
 - **Xcode Command Line Tools** — `xcode-select --install`
 - **TeX** *(optional, for complex formulas)* — `brew install --cask mactex-no-gui`
 
-## Usage
+## Features
 
-### Method 1: Shortcut (recommended)
-
-1. Write text with LaTeX formulas in any app
-2. **Select the text**
-3. Press **⌘⇧L** (customizable in Settings)
-4. Formulas are rendered and replaced in-place
-
-### Method 2: Clipboard
-
-1. **Copy** text with LaTeX formulas (⌘C)
-2. Click **Convert Clipboard** in the Taxmail window
-3. **Paste** into email (⌘V)
-
-### Method 3: Right-click
-
-1. Select text → **Right-click** → **Services** → **Taxmail**
+1. **Global shortcut** — select text in any app, press ⌘⇧L, formulas are rendered in-place
+2. **Multiple LaTeX delimiters** — `$...$`, `\(...\)`, `$$...$$`, `\[...\]`
+3. **Auto TeX detection** — automatically uses xelatex when installed for full LaTeX support
+4. **Customizable** — change shortcut, formula size, colors in the app
+5. **Email-ready** — outputs HTML + RTFD for Gmail, Apple Mail, Outlook, Thunderbird
+6. **Menu bar icon** — runs in background, always ready
+7. **CJK support** — Chinese, Japanese, Korean text in `\text{}` works out of the box
+8. **tikz-cd support** — commutative diagrams render correctly
 
 ## Supported LaTeX Syntax
 
@@ -53,27 +61,18 @@ This installs Taxmail to your Desktop. Double-click to launch.
 | `$$...$$` | Display | `$$\int_0^\infty e^{-x} dx$$` |
 | `\[...\]` | Display | `\[\sum_{n=1}^{\infty} \frac{1}{n^2}\]` |
 
-### Rendering engines
+### Rendering Engines
 
 - **matplotlib** (built-in) — handles common math: fractions, integrals, Greek letters, subscripts
-- **xelatex** (auto-detected) — full LaTeX support including `amsmath`, `tikz-cd`, CJK text, `\begin{cases}`, matrices
+- **xelatex** (auto-detected) — full LaTeX support including `amsmath`, `tikz-cd`, CJK text, matrices
 
 If TeX is installed, Taxmail automatically falls back to it for formulas matplotlib can't handle.
 
-## Settings
-
-The Taxmail window lets you:
-
-- **Change shortcut** — click "Change", press your preferred key combo
-- **Set formula size** — match your email font size (e.g., 12pt, 14pt, 16pt)
+## Configuration
 
 Settings are saved to `~/.config/latex2clip/config.toml`.
 
-## Configuration
-
 ```toml
-# ~/.config/latex2clip/config.toml
-
 [hotkey]
 key = "L"
 modifiers = ["cmd", "shift"]
@@ -84,15 +83,6 @@ dpi = 300
 font_size_pt = 14.0
 fg_color = "#000000"
 bg_color = "#FFFFFF"
-
-[output]
-inline_height_em = 1.4
-html_font_size_px = 14
-
-[advanced]
-fallback = true
-timeout_seconds = 10
-max_formulas = 50
 ```
 
 ## Architecture
@@ -115,8 +105,14 @@ max_formulas = 50
 └─────────────────────────────────┘
 ```
 
-- **Swift** handles the native macOS UI, menu bar icon, global hotkey registration, and Accessibility permissions
-- **Python** handles LaTeX parsing, formula rendering (matplotlib/xelatex), HTML composition, and clipboard management
+## Email Client Compatibility
+
+| Client | Status | Notes |
+|--------|--------|-------|
+| Gmail (Chrome) | ✅ | HTML with base64 images |
+| Apple Mail | ✅ | RTFD with embedded images |
+| Outlook | ✅ | Inline images |
+| Thunderbird | ✅ | HTML |
 
 ## Update
 
@@ -130,15 +126,6 @@ cd ~/.taxmail && git pull && ./build_app.sh
 rm -rf ~/.taxmail ~/Desktop/Taxmail.app ~/.config/latex2clip
 ```
 
-## Email Client Compatibility
-
-| Client | Status | Notes |
-|--------|--------|-------|
-| Gmail (Chrome) | ✅ | Uses HTML with base64 images |
-| Apple Mail | ✅ | Uses RTFD with embedded images |
-| Outlook (web) | ✅ | Works with inline images |
-| Thunderbird | ✅ | Uses HTML |
-
 ## License
 
-MIT
+[MIT](./LICENSE)
