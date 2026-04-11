@@ -37,7 +37,7 @@ curl -fsSL https://raw.githubusercontent.com/Franklinwang72/taxmail/main/install
 ### 前提条件
 
 - **macOS 13+**（Ventura 及以上）
-- **Python 3.10+** — `brew install python@3.12`
+- **Python 3.10+** — `brew install python`
 - **Xcode 命令行工具** — `xcode-select --install`
 - **TeX**（可选，用于复杂公式）— `brew install --cask mactex-no-gui`
 

@@ -37,7 +37,7 @@ This installs Taxmail to your Desktop. Double-click to launch.
 ### Requirements
 
 - **macOS 13+** (Ventura or later)
-- **Python 3.10+** — `brew install python@3.12`
+- **Python 3.10+** — `brew install python`
 - **Xcode Command Line Tools** — `xcode-select --install`
 - **TeX** *(optional, for complex formulas)* — `brew install --cask mactex-no-gui`
 

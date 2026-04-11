@@ -23,7 +23,7 @@ for p in python3.12 python3.13 python3.14 python3.11 python3.10 python3; do
 done
 if [ -z "$PYTHON" ]; then
     echo "❌ Python >= 3.10 not found."
-    echo "   Install: brew install python@3.12"
+    echo "   Install: brew install python"
     exit 1
 fi
 echo "✓ $($PYTHON --version)"
