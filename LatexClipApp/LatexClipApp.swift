@@ -34,11 +34,7 @@ struct TexmailApp: App {
             Divider()
 
             Button("Settings...") {
-                NSApp.activate(ignoringOtherApps: true)
-                // If window was closed, re-open it
-                if NSApp.windows.filter({ $0.isVisible }).isEmpty {
-                    NSApp.sendAction(Selector(("newWindowForTab:")), to: nil, from: nil)
-                }
+                showSettingsWindow()
             }
             .keyboardShortcut(",")
 
@@ -54,6 +50,23 @@ struct TexmailApp: App {
             .keyboardShortcut("q")
         }
     }
+}
+
+func showSettingsWindow() {
+    NSApp.activate(ignoringOtherApps: true)
+    // Try to show an existing hidden window first
+    let found = NSApp.windows.first(where: { $0.canBecomeMain && !$0.isVisible })
+    if let window = found {
+        window.makeKeyAndOrderFront(nil)
+        return
+    }
+    // If all windows are already visible, just bring them forward
+    if let window = NSApp.windows.first(where: { $0.canBecomeMain && $0.isVisible }) {
+        window.makeKeyAndOrderFront(nil)
+        return
+    }
+    // No window exists at all — ask SwiftUI to create one
+    NSApp.sendAction(Selector(("newWindowForTab:")), to: nil, from: nil)
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -89,10 +102,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        if !flag {
-            NSApp.activate(ignoringOtherApps: true)
-            NSApp.sendAction(Selector(("newWindowForTab:")), to: nil, from: nil)
-        }
+        if !flag { showSettingsWindow() }
         return true
     }
 
