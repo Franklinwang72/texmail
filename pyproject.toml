@@ -29,6 +29,9 @@ dev = ["pytest", "ruff", "mypy"]
 [project.scripts]
 latex2clip = "latex2clip.cli:main"
 
+[tool.setuptools.packages.find]
+include = ["latex2clip*"]
+
 [build-system]
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
