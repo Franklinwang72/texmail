@@ -125,6 +125,6 @@ xattr -cr ~/Desktop/Texmail.app 2>/dev/null || true
 
 echo ""
 echo "╔══════════════════════════════════════╗"
-echo "║   ✅ Texmail.app on your Desktop  ║"
+echo "║   ✅ Texmail.app on your Desktop     ║"
 echo "║   Double-click to launch!            ║"
 echo "╚══════════════════════════════════════╝"
