@@ -1,21 +1,13 @@
 import SwiftUI
 import AppKit
 import ApplicationServices
-import ServiceManagement
+// Login Items managed via System Events (works for unsigned apps at any location)
 
 @main
 struct TexmailApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @State private var shortcutDisplay: String = "⌘⇧L"
 
     var body: some Scene {
-        // Main settings window
-        WindowGroup {
-            ContentView()
-        }
-        .defaultSize(width: 480, height: 400)
-        .windowResizability(.contentSize)
-
         // Menu bar icon
         MenuBarExtra("Texmail", systemImage: "sum") {
             Text("Texmail")
@@ -28,13 +20,14 @@ struct TexmailApp: App {
                 appDelegate.conversionService.performFullConversion(fontSize: cfg.fontSizePt) { _ in }
             }
 
-            Text("Shortcut: \(shortcutDisplay)")
+            let cfg = loadConfig()
+            Text("Shortcut: \(displayShortcut(key: cfg.hotkeyKey, modifiers: cfg.hotkeyModifiers))")
                 .foregroundStyle(.secondary)
 
             Divider()
 
             Button("Settings...") {
-                showSettingsWindow()
+                appDelegate.showSettings()
             }
             .keyboardShortcut(",")
 
@@ -52,48 +45,32 @@ struct TexmailApp: App {
     }
 }
 
-func showSettingsWindow() {
-    NSApp.activate(ignoringOtherApps: true)
-    // Try to show an existing hidden window first
-    let found = NSApp.windows.first(where: { $0.canBecomeMain && !$0.isVisible })
-    if let window = found {
-        window.makeKeyAndOrderFront(nil)
-        return
-    }
-    // If all windows are already visible, just bring them forward
-    if let window = NSApp.windows.first(where: { $0.canBecomeMain && $0.isVisible }) {
-        window.makeKeyAndOrderFront(nil)
-        return
-    }
-    // No window exists at all — ask SwiftUI to create one
-    NSApp.sendAction(Selector(("newWindowForTab:")), to: nil, from: nil)
-}
-
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     let hotkeyManager = HotkeyManager()
     let conversionService = ConversionService()
-    var launchAtLogin = false
+    @Published var launchAtLogin = false
+
+    private var settingsWindow: NSWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Prompt accessibility
         let opts = [kAXTrustedCheckOptionPrompt.takeUnretainedValue(): true] as CFDictionary
         _ = AXIsProcessTrustedWithOptions(opts)
 
-        // Register hotkey
         let cfg = loadConfig()
         hotkeyManager.register(key: cfg.hotkeyKey, modifiers: cfg.hotkeyModifiers) { [weak self] in
             self?.onHotkeyFired()
         }
 
-        // Listen for shortcut changes from UI
         NotificationCenter.default.addObserver(
             self, selector: #selector(hotkeyDidChange(_:)),
             name: .hotkeyChanged, object: nil
         )
 
-        // Check launch at login status
-        if #available(macOS 13.0, *) {
-            launchAtLogin = SMAppService.mainApp.status == .enabled
+        checkLaunchAtLogin()
+
+        // Show settings window on first launch
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.showSettings()
         }
     }
 
@@ -102,23 +79,63 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        if !flag { showSettingsWindow() }
+        if !flag { showSettings() }
         return true
     }
 
-    func toggleLaunchAtLogin() {
-        if #available(macOS 13.0, *) {
-            do {
-                if launchAtLogin {
-                    try SMAppService.mainApp.unregister()
-                } else {
-                    try SMAppService.mainApp.register()
-                }
-                launchAtLogin.toggle()
-            } catch {
-                print("[Texmail] Launch at login error: \(error)")
-            }
+    // MARK: - Settings Window
+
+    func showSettings() {
+        if let window = settingsWindow {
+            window.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
         }
+
+        let contentView = NSHostingView(rootView: ContentView())
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 480, height: 400),
+            styleMask: [.titled, .closable, .miniaturizable],
+            backing: .buffered,
+            defer: false
+        )
+        window.title = "Texmail"
+        window.contentView = contentView
+        window.center()
+        window.isReleasedWhenClosed = false  // Keep in memory when closed
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+        settingsWindow = window
+    }
+
+    // MARK: - Launch at Login (via osascript login items — works for any app location)
+
+    func toggleLaunchAtLogin() {
+        let appPath = Bundle.main.bundlePath
+        if launchAtLogin {
+            // Remove login item
+            let script = "tell application \"System Events\" to delete login item \"Texmail\""
+            Process.launchedProcess(launchPath: "/usr/bin/osascript", arguments: ["-e", script])
+            launchAtLogin = false
+        } else {
+            // Add login item
+            let script = "tell application \"System Events\" to make login item at end with properties {path:\"\(appPath)\", hidden:false}"
+            Process.launchedProcess(launchPath: "/usr/bin/osascript", arguments: ["-e", script])
+            launchAtLogin = true
+        }
+    }
+
+    private func checkLaunchAtLogin() {
+        let script = "tell application \"System Events\" to get the name of every login item"
+        let proc = Process()
+        proc.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
+        proc.arguments = ["-e", script]
+        let pipe = Pipe()
+        proc.standardOutput = pipe
+        try? proc.run()
+        proc.waitUntilExit()
+        let output = String(data: pipe.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
+        launchAtLogin = output.contains("Texmail")
     }
 
     private func onHotkeyFired() {
