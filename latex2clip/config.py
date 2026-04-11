@@ -41,7 +41,7 @@ html_font_size_px = 14
 fallback = true
 timeout_seconds = 10
 max_formulas = 50
-preview_dir = "~/Library/Caches/taxmail"
+preview_dir = "~/Library/Caches/texmail"
 """
 
 
@@ -127,7 +127,7 @@ def load_config() -> Config:
         return _parse_toml(data)
     except (OSError, ValueError, KeyError) as e:
         import logging
-        logging.getLogger("taxmail").warning("Config load failed, using defaults: %s", e)
+        logging.getLogger("texmail").warning("Config load failed, using defaults: %s", e)
         return Config()
 
 

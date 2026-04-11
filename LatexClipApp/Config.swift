@@ -63,7 +63,7 @@ func loadConfig() -> AppConfig {
 }
 
 // Serial queue to prevent concurrent config writes
-private let configQueue = DispatchQueue(label: "com.taxmail.config")
+private let configQueue = DispatchQueue(label: "com.texmail.config")
 
 private func configPath() -> String {
     let dir = NSHomeDirectory() + "/.config/latex2clip"
@@ -79,7 +79,7 @@ private func writeConfig(_ content: String) {
     do {
         try content.write(toFile: configPath(), atomically: true, encoding: .utf8)
     } catch {
-        print("[Taxmail] Failed to save config: \(error)")
+        print("[Texmail] Failed to save config: \(error)")
     }
 }
 

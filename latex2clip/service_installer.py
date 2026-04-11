@@ -94,7 +94,7 @@ sleep 0.2
 osascript -e 'tell application "System Events" to keystroke "v" using command down'
 
 # 4. Notify
-osascript -e 'display notification "Formulas rendered and replaced" with title "Taxmail"'
+osascript -e 'display notification "Formulas rendered and replaced" with title "Texmail"'
 '''
 
     # Build the Automator workflow plist

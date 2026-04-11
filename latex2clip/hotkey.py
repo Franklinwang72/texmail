@@ -114,7 +114,7 @@ class HotkeyListener:
             raise RuntimeError(f"InstallEventHandler failed: {status}")
 
         self._register_key()
-        print(f"[Taxmail] Carbon hotkey registered: {'+'.join(self._target_mods)}+{self._target_key}")
+        print(f"[Texmail] Carbon hotkey registered: {'+'.join(self._target_mods)}+{self._target_key}")
 
     def _register_key(self) -> None:
         # Unregister old key if any
@@ -154,7 +154,7 @@ class HotkeyListener:
         self._target_key = key.upper()
         self._target_mods = [m.lower() for m in modifiers]
         self._register_key()
-        print(f"[Taxmail] Hotkey updated: {'+'.join(self._target_mods)}+{self._target_key}")
+        print(f"[Texmail] Hotkey updated: {'+'.join(self._target_mods)}+{self._target_key}")
 
     def stop(self) -> None:
         if self._hotkey_ref.value:

@@ -2,7 +2,7 @@
     <br> <b>English</b> | <a href="README_CN.md">中文</a>
 </p>
 
-<h1 align="center">∑ Taxmail</h1>
+<h1 align="center">∑ Texmail</h1>
 
 <p align="center">
     <em>Render LaTeX formulas for email — select, press shortcut, done.</em>
@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="LICENSE" target="_blank">
-    <img alt="MIT License" src="https://img.shields.io/github/license/Franklinwang72/taxmail.svg?style=flat-square" />
+    <img alt="MIT License" src="https://img.shields.io/github/license/Franklinwang72/texmail.svg?style=flat-square" />
   </a>
   <img alt="Swift" src="https://img.shields.io/badge/-Swift-F05138?style=flat-square&logo=swift&logoColor=white" />
   <img alt="Python" src="https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white" />
@@ -18,7 +18,7 @@
   <img alt="LaTeX" src="https://img.shields.io/badge/-LaTeX-008080?style=flat-square&logo=latex&logoColor=white" />
 </p>
 
-Write math in plain text with `$...$` or `\[...\]`, select it, and Taxmail replaces the formulas with beautifully rendered images. Paste into any email client — Gmail, Apple Mail, Outlook — and your recipient sees real math, not code.
+Write math in plain text with `$...$` or `\[...\]`, select it, and Texmail replaces the formulas with beautifully rendered images. Paste into any email client — Gmail, Apple Mail, Outlook — and your recipient sees real math, not code.
 
 ## How to Use
 
@@ -29,10 +29,10 @@ Write math in plain text with `$...$` or `\[...\]`, select it, and Taxmail repla
 ## Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Franklinwang72/taxmail/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Franklinwang72/texmail/main/install.sh | bash
 ```
 
-This installs Taxmail to your Desktop. Double-click to launch.
+This installs Texmail to your Desktop. Double-click to launch.
 
 ### Requirements
 
@@ -66,7 +66,7 @@ This installs Taxmail to your Desktop. Double-click to launch.
 - **matplotlib** (built-in) — handles common math: fractions, integrals, Greek letters, subscripts
 - **xelatex** (auto-detected) — full LaTeX support including `amsmath`, `tikz-cd`, CJK text, matrices
 
-If TeX is installed, Taxmail automatically falls back to it for formulas matplotlib can't handle.
+If TeX is installed, Texmail automatically falls back to it for formulas matplotlib can't handle.
 
 ## Configuration
 
@@ -117,13 +117,13 @@ bg_color = "#FFFFFF"
 ## Update
 
 ```bash
-cd ~/.taxmail && git pull && ./build_app.sh
+cd ~/.texmail && git pull && ./build_app.sh
 ```
 
 ## Uninstall
 
 ```bash
-rm -rf ~/.taxmail ~/Desktop/Taxmail.app ~/.config/latex2clip
+rm -rf ~/.texmail ~/Desktop/Texmail.app ~/.config/latex2clip
 ```
 
 ## License

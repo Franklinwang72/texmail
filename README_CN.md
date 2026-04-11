@@ -2,7 +2,7 @@
     <br> <a href="README.md">English</a> | <b>中文</b>
 </p>
 
-<h1 align="center">∑ Taxmail</h1>
+<h1 align="center">∑ Texmail</h1>
 
 <p align="center">
     <em>在邮件中发送 LaTeX 公式 —— 选中文字，按快捷键，搞定。</em>
@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="LICENSE" target="_blank">
-    <img alt="MIT License" src="https://img.shields.io/github/license/Franklinwang72/taxmail.svg?style=flat-square" />
+    <img alt="MIT License" src="https://img.shields.io/github/license/Franklinwang72/texmail.svg?style=flat-square" />
   </a>
   <img alt="Swift" src="https://img.shields.io/badge/-Swift-F05138?style=flat-square&logo=swift&logoColor=white" />
   <img alt="Python" src="https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white" />
@@ -18,7 +18,7 @@
   <img alt="LaTeX" src="https://img.shields.io/badge/-LaTeX-008080?style=flat-square&logo=latex&logoColor=white" />
 </p>
 
-用 `$...$` 或 `\[...\]` 写数学公式，选中文字，Taxmail 自动把公式渲染成图片。粘贴到任何邮件客户端 —— Gmail、Apple Mail、Outlook —— 收件人看到的就是排版好的数学公式。
+用 `$...$` 或 `\[...\]` 写数学公式，选中文字，Texmail 自动把公式渲染成图片。粘贴到任何邮件客户端 —— Gmail、Apple Mail、Outlook —— 收件人看到的就是排版好的数学公式。
 
 ## 使用演示
 
@@ -29,10 +29,10 @@
 ## 安装
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Franklinwang72/taxmail/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Franklinwang72/texmail/main/install.sh | bash
 ```
 
-安装完成后 Taxmail.app 出现在桌面，双击打开即可。
+安装完成后 Texmail.app 出现在桌面，双击打开即可。
 
 ### 前提条件
 
@@ -66,7 +66,7 @@ curl -fsSL https://raw.githubusercontent.com/Franklinwang72/taxmail/main/install
 - **matplotlib**（内置）— 处理常见数学符号：分式、积分、希腊字母、上下标
 - **xelatex**（自动检测）— 完整 LaTeX 支持，包括 `amsmath`、`tikz-cd`、中文 `\text{}`、矩阵
 
-如果你装了 TeX，Taxmail 会自动在 matplotlib 渲染失败时切换到 xelatex。
+如果你装了 TeX，Texmail 会自动在 matplotlib 渲染失败时切换到 xelatex。
 
 ## 配置
 
@@ -97,13 +97,13 @@ bg_color = "#FFFFFF"
 ## 更新
 
 ```bash
-cd ~/.taxmail && git pull && ./build_app.sh
+cd ~/.texmail && git pull && ./build_app.sh
 ```
 
 ## 卸载
 
 ```bash
-rm -rf ~/.taxmail ~/Desktop/Taxmail.app ~/.config/latex2clip
+rm -rf ~/.texmail ~/Desktop/Texmail.app ~/.config/latex2clip
 ```
 
 ## 开源协议

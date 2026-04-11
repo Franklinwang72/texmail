@@ -1,14 +1,14 @@
 #!/bin/bash
-# Taxmail — one-line installer
-# Usage: curl -fsSL https://raw.githubusercontent.com/Franklinwang72/taxmail/main/install.sh | bash
+# Texmail — one-line installer
+# Usage: curl -fsSL https://raw.githubusercontent.com/Franklinwang72/texmail/main/install.sh | bash
 set -e
 
 echo "╔══════════════════════════════════════╗"
-echo "║        Installing Taxmail            ║"
+echo "║        Installing Texmail            ║"
 echo "╚══════════════════════════════════════╝"
 
 # Where to install
-INSTALL_DIR="$HOME/.taxmail"
+INSTALL_DIR="$HOME/.texmail"
 
 # Check Python
 PYTHON=""
@@ -42,7 +42,7 @@ if [ -d "$INSTALL_DIR" ]; then
     cd "$INSTALL_DIR" && git pull --quiet
 else
     echo "  Downloading..."
-    git clone --quiet https://github.com/Franklinwang72/taxmail.git "$INSTALL_DIR"
+    git clone --quiet https://github.com/Franklinwang72/texmail.git "$INSTALL_DIR"
 fi
 
 cd "$INSTALL_DIR"
@@ -52,10 +52,10 @@ cd "$INSTALL_DIR"
 
 echo ""
 echo "╔══════════════════════════════════════════════════╗"
-echo "║  ✅ Taxmail installed!                           ║"
+echo "║  ✅ Texmail installed!                           ║"
 echo "║                                                  ║"
 echo "║  App is on your Desktop — double-click to run.   ║"
 echo "║                                                  ║"
 echo "║  To update later:                                ║"
-echo "║    cd ~/.taxmail && git pull && ./build_app.sh   ║"
+echo "║    cd ~/.texmail && git pull && ./build_app.sh   ║"
 echo "╚══════════════════════════════════════════════════╝"

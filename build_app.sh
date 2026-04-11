@@ -1,18 +1,18 @@
 #!/bin/bash
-# Build Taxmail.app — native Swift macOS app
+# Build Texmail.app — native Swift macOS app
 # Usage: git clone ... && cd latex2clip && ./build_app.sh
 set -e
 cd "$(dirname "$0")"
 
 PROJECT_DIR="$(pwd)"
 VERSION=$(cat VERSION 2>/dev/null || echo "0.1.0")
-APP="dist/Taxmail.app"
+APP="dist/Texmail.app"
 CONTENTS="$APP/Contents"
 MACOS="$CONTENTS/MacOS"
 RESOURCES="$CONTENTS/Resources"
 
 echo "╔══════════════════════════════════════╗"
-echo "║     Building Taxmail.app v$VERSION       ║"
+echo "║     Building Texmail.app v$VERSION       ║"
 echo "╚══════════════════════════════════════╝"
 
 # ── 1. Check Swift compiler + SDK ──
@@ -89,11 +89,11 @@ cat > "$CONTENTS/Info.plist" << PLIST
 <plist version="1.0">
 <dict>
     <key>CFBundleName</key>
-    <string>Taxmail</string>
+    <string>Texmail</string>
     <key>CFBundleDisplayName</key>
-    <string>Taxmail</string>
+    <string>Texmail</string>
     <key>CFBundleIdentifier</key>
-    <string>com.taxmail.app</string>
+    <string>com.texmail.app</string>
     <key>CFBundleVersion</key>
     <string>$VERSION</string>
     <key>CFBundleShortVersionString</key>
@@ -119,12 +119,12 @@ cat > "$CONTENTS/Info.plist" << PLIST
 PLIST
 
 # ── 6. Deploy ──
-rm -rf ~/Desktop/Taxmail.app
-cp -R "$APP" ~/Desktop/Taxmail.app
-xattr -cr ~/Desktop/Taxmail.app 2>/dev/null || true
+rm -rf ~/Desktop/Texmail.app
+cp -R "$APP" ~/Desktop/Texmail.app
+xattr -cr ~/Desktop/Texmail.app 2>/dev/null || true
 
 echo ""
 echo "╔══════════════════════════════════════╗"
-echo "║   ✅ Taxmail.app on your Desktop  ║"
+echo "║   ✅ Texmail.app on your Desktop  ║"
 echo "║   Double-click to launch!            ║"
 echo "╚══════════════════════════════════════╝"

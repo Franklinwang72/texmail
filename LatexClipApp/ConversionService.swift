@@ -149,7 +149,7 @@ class ConversionService {
             .replacingOccurrences(of: "\"", with: "\\\"")
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
-        process.arguments = ["-e", "display notification \"\(safe)\" with title \"Taxmail\""]
+        process.arguments = ["-e", "display notification \"\(safe)\" with title \"Texmail\""]
         try? process.run()
     }
 }

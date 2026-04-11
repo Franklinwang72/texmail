@@ -4,7 +4,7 @@ import ApplicationServices
 import ServiceManagement
 
 @main
-struct TaxmailApp: App {
+struct TexmailApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @State private var shortcutDisplay: String = "⌘⇧L"
 
@@ -17,8 +17,8 @@ struct TaxmailApp: App {
         .windowResizability(.contentSize)
 
         // Menu bar icon
-        MenuBarExtra("Taxmail", systemImage: "sum") {
-            Text("Taxmail")
+        MenuBarExtra("Texmail", systemImage: "sum") {
+            Text("Texmail")
                 .font(.headline)
 
             Divider()
@@ -44,7 +44,7 @@ struct TaxmailApp: App {
 
             Divider()
 
-            Button("Quit Taxmail") {
+            Button("Quit Texmail") {
                 NSApplication.shared.terminate(nil)
             }
             .keyboardShortcut("q")
@@ -101,7 +101,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 }
                 launchAtLogin.toggle()
             } catch {
-                print("[Taxmail] Launch at login error: \(error)")
+                print("[Texmail] Launch at login error: \(error)")
             }
         }
     }

@@ -13,7 +13,7 @@ from latex2clip.parser import LatexSegment, parse
 from latex2clip.renderer import render_with_fallback
 from latex2clip.renderer.base import RenderConfig
 
-log = logging.getLogger("taxmail")
+log = logging.getLogger("texmail")
 
 
 class Daemon:
@@ -25,17 +25,17 @@ class Daemon:
         cfg = self.config_manager.config
         text = read_plaintext()
         if not text:
-            send_notification("Taxmail", "Clipboard is empty")
+            send_notification("Texmail", "Clipboard is empty")
             return
 
         segments = parse(text)
         latex_indices = [i for i, s in enumerate(segments) if isinstance(s, LatexSegment)]
         if not latex_indices:
-            send_notification("Taxmail", "No LaTeX formulas found")
+            send_notification("Texmail", "No LaTeX formulas found")
             return
 
         if len(latex_indices) > cfg.advanced.max_formulas:
-            send_notification("Taxmail",
+            send_notification("Texmail",
                               f"Too many formulas ({len(latex_indices)} > {cfg.advanced.max_formulas})")
             return
 
@@ -69,7 +69,7 @@ class Daemon:
             f"<html><body style='padding:20px;font-family:sans-serif;'>{html}</body></html>")
         self.last_preview_path = str(preview_path)
 
-        send_notification("Taxmail", f"Converted {len(rendered)} formula(s). Cmd+V to paste.")
+        send_notification("Texmail", f"Converted {len(rendered)} formula(s). Cmd+V to paste.")
 
     def start(self) -> None:
         from latex2clip.hotkey import HotkeyListener
@@ -88,7 +88,7 @@ class Daemon:
         except PermissionError:
             log.warning("Accessibility permission not granted — hotkey disabled. "
                         "Use menu bar Convert Now instead.")
-            send_notification("Taxmail",
+            send_notification("Texmail",
                               "Grant Accessibility permission for hotkey support")
 
         self.config_manager.start_watching()

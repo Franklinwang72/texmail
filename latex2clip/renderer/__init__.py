@@ -58,7 +58,7 @@ def render_with_fallback(
 ) -> RenderedFormula:
     """Render with primary engine, falling back on failure."""
     import logging
-    log = logging.getLogger("taxmail.renderer")
+    log = logging.getLogger("texmail.renderer")
 
     primary = get_renderer(engine)
     try:

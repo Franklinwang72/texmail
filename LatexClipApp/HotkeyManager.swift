@@ -65,7 +65,7 @@ class HotkeyManager {
         )
 
         if status != noErr {
-            print("[Taxmail] InstallEventHandler failed: \(status)")
+            print("[Texmail] InstallEventHandler failed: \(status)")
         }
     }
 
@@ -77,7 +77,7 @@ class HotkeyManager {
         }
 
         guard let keycode = keyCodes[key.uppercased()] else {
-            print("[Taxmail] Unknown key: \(key)")
+            print("[Texmail] Unknown key: \(key)")
             return
         }
 
@@ -103,9 +103,9 @@ class HotkeyManager {
         if status == noErr {
             hotkeyRef = ref
             let display = modifiers.map { modSymbols[$0] ?? $0 }.joined() + key.uppercased()
-            print("[Taxmail] Hotkey registered: \(display) (keycode=\(keycode), mods=\(carbonMask))", terminator: "\n")
+            print("[Texmail] Hotkey registered: \(display) (keycode=\(keycode), mods=\(carbonMask))", terminator: "\n")
         } else {
-            print("[Taxmail] RegisterEventHotKey FAILED: status=\(status)", terminator: "\n")
+            print("[Texmail] RegisterEventHotKey FAILED: status=\(status)", terminator: "\n")
         }
     }
 

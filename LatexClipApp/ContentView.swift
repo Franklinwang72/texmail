@@ -22,7 +22,7 @@ struct ContentView: View {
 
             // ── Header ──
             VStack(spacing: 6) {
-                Text("Taxmail")
+                Text("Texmail")
                     .font(.system(size: 28, weight: .bold, design: .rounded))
 
                 Text("LaTeX formulas, ready for email.")
