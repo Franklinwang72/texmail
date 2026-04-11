@@ -57,11 +57,10 @@ class MatplotlibRenderer(BaseRenderer):
 
         # Pre-validate: try parsing with mathtext before rendering
         # If it fails, raise immediately so fallback kicks in
-        from matplotlib.mathtext import MathTextParser
-        parser = MathTextParser("bitmap")
+        from matplotlib import mathtext as _mt
         try:
-            parser.parse(f"${latex}$", dpi=72, prop=None)
-        except (ValueError, RuntimeError) as e:
+            _mt.MathTextParser("agg").parse(f"${latex}$", dpi=72, prop=None)
+        except (ValueError, RuntimeError, TypeError) as e:
             raise ValueError(f"mathtext cannot parse: {e}") from e
 
         fontsize = config.font_size_pt
