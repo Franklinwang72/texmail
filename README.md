@@ -1,6 +1,6 @@
 # ∑ Taxmail
 
-[中文文档](README_CN.md)
+**English** | [中文](README_CN.md)
 
 **Render LaTeX formulas for email — select, press shortcut, done.**
 
