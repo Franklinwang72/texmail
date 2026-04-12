@@ -140,6 +140,9 @@ Thanks to everyone who has contributed to Texmail!
 <a href="https://github.com/gengjgg">
   <img src="https://github.com/gengjgg.png" width="60" height="60" style="border-radius:50%" alt="gengjgg" />
 </a>
+<a href="https://github.com/edoublemanda">
+  <img src="https://github.com/edoublemanda.png" width="60" height="60" style="border-radius:50%" alt="edoublemanda" />
+</a>
 
 ## License
 
