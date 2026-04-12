@@ -259,19 +259,16 @@
             color: var(--text-secondary);
             line-height: 1.5;
         }
-        .feature-card .icon {
-            width: 36px; height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
-            font-size: 1.1em;
-            font-weight: 700;
+        .feature-card::before {
+            content: '';
+            display: block;
+            width: 32px; height: 2px;
+            margin-bottom: 20px;
+            border-radius: 1px;
         }
-        .icon-1 { background: rgba(255,99,99,0.12); color: var(--accent); }
-        .icon-2 { background: rgba(129,140,248,0.12); color: var(--accent-2); }
-        .icon-3 { background: rgba(52,211,153,0.12); color: var(--accent-3); }
+        .feature-card:nth-child(1)::before, .feature-card:nth-child(4)::before { background: var(--accent); }
+        .feature-card:nth-child(2)::before, .feature-card:nth-child(5)::before { background: var(--accent-2); }
+        .feature-card:nth-child(3)::before, .feature-card:nth-child(6)::before { background: var(--accent-3); }
 
         /* ── Requirements ── */
         .requirements {
@@ -342,7 +339,6 @@
         </nav>
 
         <section class="hero">
-            <div class="badge">Free and open source</div>
             <h1>LaTeX formulas,<br>ready for email.</h1>
             <p class="sub">Select text with math notation, press one shortcut, and paste perfectly rendered equations into any email client.</p>
             <div class="cta-group">
@@ -375,32 +371,26 @@
             <h2>Everything you need.</h2>
             <div class="feature-grid">
                 <div class="feature-card">
-                    <div class="icon icon-1">K</div>
                     <h3>Global Shortcut</h3>
                     <p>Select text in any app, press one keystroke. Formulas are rendered and replaced in-place.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="icon icon-2">T</div>
                     <h3>Smart Rendering</h3>
                     <p>matplotlib for simple math. Auto-falls back to xelatex for amsmath, tikz-cd, matrices, CJK text.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="icon icon-3">M</div>
                     <h3>Email-Ready</h3>
                     <p>Outputs HTML and RTFD. Works with Gmail, Apple Mail, Outlook, and Thunderbird.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="icon icon-2">$</div>
                     <h3>All Delimiters</h3>
                     <p>Supports $...$ and \(...\) for inline, $$...$$ and \[...\] for display math.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="icon icon-1">A</div>
                     <h3>Computer Modern</h3>
                     <p>The classic LaTeX font. Your formulas look exactly like they do in academic papers.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="icon icon-3">S</div>
                     <h3>Menu Bar App</h3>
                     <p>Runs silently in the background. No Dock clutter. Always ready when you need it.</p>
                 </div>
