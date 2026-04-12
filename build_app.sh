@@ -51,7 +51,7 @@ if [ ! -f .venv/bin/python ]; then
     "$PYTHON" -m venv .venv
 fi
 echo "  Installing Python dependencies..."
-if ! .venv/bin/pip install -e . 2>&1; then
+if ! .venv/bin/pip install -e . 2>&1 | grep -v "^\[notice\]"; then
     echo "❌ pip install failed. Check the error above."
     exit 1
 fi

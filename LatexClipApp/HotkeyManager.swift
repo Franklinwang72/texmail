@@ -88,7 +88,7 @@ class HotkeyManager {
             }
         }
 
-        var hotKeyID = EventHotKeyID(signature: 0x4C32_5843, id: 1) // 'L2XC'
+        let hotKeyID = EventHotKeyID(signature: 0x4C32_5843, id: 1) // 'L2XC'
         var ref: EventHotKeyRef?
 
         let status = RegisterEventHotKey(
