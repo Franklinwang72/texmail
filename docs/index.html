@@ -236,6 +236,8 @@
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 16px;
+            max-width: 720px;
+            margin: 0 auto;
         }
         .feature-card {
             background: var(--card);
@@ -266,9 +268,9 @@
             margin-bottom: 20px;
             border-radius: 1px;
         }
-        .feature-card:nth-child(1)::before, .feature-card:nth-child(4)::before { background: var(--accent); }
-        .feature-card:nth-child(2)::before, .feature-card:nth-child(5)::before { background: var(--accent-2); }
-        .feature-card:nth-child(3)::before, .feature-card:nth-child(6)::before { background: var(--accent-3); }
+        .feature-card:nth-child(1)::before { background: var(--accent); }
+        .feature-card:nth-child(2)::before { background: var(--accent-2); }
+        .feature-card:nth-child(3)::before { background: var(--accent-3); }
 
         /* ── Requirements ── */
         .requirements {
@@ -371,28 +373,16 @@
             <h2>Everything you need.</h2>
             <div class="feature-grid">
                 <div class="feature-card">
-                    <h3>Global Shortcut</h3>
-                    <p>Select text in any app, press one keystroke. Formulas are rendered and replaced in-place.</p>
+                    <h3>One Shortcut</h3>
+                    <p>Select text, press a keystroke. Formulas are rendered and replaced in-place.</p>
                 </div>
                 <div class="feature-card">
                     <h3>Smart Rendering</h3>
-                    <p>matplotlib for simple math. Auto-falls back to xelatex for amsmath, tikz-cd, matrices, CJK text.</p>
+                    <p>Simple math via matplotlib. Complex formulas auto-fall back to xelatex.</p>
                 </div>
                 <div class="feature-card">
                     <h3>Email-Ready</h3>
-                    <p>Outputs HTML and RTFD. Works with Gmail, Apple Mail, Outlook, and Thunderbird.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>All Delimiters</h3>
-                    <p>Supports $...$ and \(...\) for inline, $$...$$ and \[...\] for display math.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Computer Modern</h3>
-                    <p>The classic LaTeX font. Your formulas look exactly like they do in academic papers.</p>
-                </div>
-                <div class="feature-card">
-                    <h3>Menu Bar App</h3>
-                    <p>Runs silently in the background. No Dock clutter. Always ready when you need it.</p>
+                    <p>Works with Gmail, Apple Mail, Outlook, and Thunderbird.</p>
                 </div>
             </div>
         </section>
