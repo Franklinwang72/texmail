@@ -170,7 +170,9 @@
         /* Install bar */
         .install-bar {
             margin-top: 36px;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 10px;
@@ -181,6 +183,19 @@
             font-size: 0.85em;
             color: var(--accent-3);
         }
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 6px 10px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: color 0.15s, border-color 0.15s;
+            white-space: nowrap;
+        }
+        .copy-btn:hover { color: var(--text); border-color: #444; }
+        .copy-btn.copied { color: var(--accent-3); border-color: var(--accent-3); }
 
         /* ── Demo ── */
         .demo {
@@ -352,8 +367,18 @@
                 </a>
             </div>
             <div class="install-bar">
-                <code>curl -fsSL https://raw.githubusercontent.com/Franklinwang72/texmail/main/install.sh | bash</code>
+                <code id="install-cmd">curl -fsSL https://raw.githubusercontent.com/Franklinwang72/texmail/main/install.sh | bash</code>
+                <button class="copy-btn" onclick="copyCmd()">Copy</button>
             </div>
+            <script>
+            function copyCmd() {
+                navigator.clipboard.writeText(document.getElementById('install-cmd').textContent);
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = 'Copied';
+                btn.classList.add('copied');
+                setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+            }
+            </script>
         </section>
 
         <section class="demo">
