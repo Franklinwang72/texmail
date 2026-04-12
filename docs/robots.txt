@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://franklinwang72.github.io/texmail/sitemap.xml
