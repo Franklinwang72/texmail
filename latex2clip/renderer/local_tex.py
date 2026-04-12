@@ -99,8 +99,18 @@ class LocalTeXRenderer(BaseRenderer):
                 env=env,
             )
             if result.returncode != 0:
-                err = (result.stderr or result.stdout or b"").decode("utf-8", errors="replace")
-                raise RuntimeError(f"TeX failed:\n{err[:500]}")
+                raw = (result.stdout or result.stderr or b"").decode("utf-8", errors="replace")
+                # Extract actual TeX error lines (start with !)
+                error_lines = [l for l in raw.splitlines() if l.startswith("!")]
+                if error_lines:
+                    err_msg = "; ".join(error_lines[:3])
+                else:
+                    # Fallback: skip the version banner, find useful info
+                    lines = raw.splitlines()
+                    useful = [l for l in lines if l.strip() and not l.startswith("This is")
+                              and not l.startswith("restricted") and not l.startswith("entering")]
+                    err_msg = " ".join(useful[:5])
+                raise RuntimeError(f"TeX error: {err_msg[:300]}")
 
             # Convert PDF → PNG at the requested DPI.
             # pdftoppm gives much sharper results than sips.
