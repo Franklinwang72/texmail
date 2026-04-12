@@ -18,7 +18,7 @@
   <img alt="LaTeX" src="https://img.shields.io/badge/-LaTeX-008080?style=flat-square&logo=latex&logoColor=white" />
 </p>
 
-用 `$...$` 或 `\[...\]` 写数学公式，选中文字，Texmail 自动把公式渲染成图片。粘贴到任何邮件客户端 —— Gmail、Apple Mail、Outlook —— 收件人看到的就是排版好的数学公式。
+用 `$...$` 或 `\[...\]` 写数学公式，选中文字，Texmail 自动把公式渲染成图片。粘贴到 Gmail、Apple Mail、Outlook、Thunderbird —— 收件人看到的就是排版好的数学公式。
 
 ## 使用演示
 
@@ -43,66 +43,25 @@ curl -fsSL https://raw.githubusercontent.com/Franklinwang72/texmail/main/install
 
 ## 功能特点
 
-1. **全局快捷键** — 在任意应用中选中文字，按 ⌘⇧L，公式原地渲染
-2. **多种 LaTeX 定界符** — `$...$`、`\(...\)`、`$$...$$`、`\[...\]`
-3. **自动检测 TeX** — 安装了 xelatex 时自动使用，支持完整 LaTeX 语法
-4. **可自定义** — 在 app 内修改快捷键、公式字号
-5. **邮件兼容** — 输出 HTML + RTFD，兼容 Gmail、Apple Mail、Outlook、Thunderbird
-6. **菜单栏图标** — 后台运行，随时待命
-7. **中日韩支持** — `\text{}` 中的中文可正常渲染
-8. **tikz-cd 支持** — 交换图可正常渲染
-
-## 支持的 LaTeX 语法
-
-| 定界符 | 类型 | 示例 |
-|--------|------|------|
-| `$...$` | 行内公式 | `$x^2 + y^2 = r^2$` |
-| `\(...\)` | 行内公式 | `\(E = mc^2\)` |
-| `$$...$$` | 行间公式 | `$$\int_0^\infty e^{-x} dx$$` |
-| `\[...\]` | 行间公式 | `\[\sum_{n=1}^{\infty} \frac{1}{n^2}\]` |
-
-### 渲染引擎
-
-- **matplotlib**（内置）— 处理常见数学符号：分式、积分、希腊字母、上下标
-- **xelatex**（自动检测）— 完整 LaTeX 支持，包括 `amsmath`、`tikz-cd`、中文 `\text{}`、矩阵
-
-如果你装了 TeX，Texmail 会自动在 matplotlib 渲染失败时切换到 xelatex。
+- **全局快捷键** — 在任意应用中选中文字，按 ⌘⇧L，公式原地渲染
+- **所有 LaTeX 定界符** — `$...$`、`\(...\)`、`$$...$$`、`\[...\]`
+- **智能渲染** — 简单公式用 matplotlib，复杂公式（`amsmath`、`tikz-cd`、矩阵、中文）自动切换 xelatex
+- **可自定义** — 在 app 内直接修改快捷键和公式字号
+- **邮件兼容** — 输出 HTML + RTFD，支持 Gmail、Apple Mail、Outlook、Thunderbird
+- **菜单栏应用** — 后台静默运行，不占 Dock 空间
+- **Computer Modern 字体** — 经典 LaTeX 论文字体
 
 ## 配置
 
-设置保存在 `~/.config/latex2clip/config.toml`。
+设置可在 app 窗口中修改。高级选项请编辑 `~/.config/latex2clip/config.toml`。
 
-```toml
-[hotkey]
-key = "L"
-modifiers = ["cmd", "shift"]
-
-[render]
-engine = "auto"        # auto | matplotlib | latex
-dpi = 300
-font_size_pt = 14.0
-fg_color = "#000000"
-bg_color = "#FFFFFF"
-```
-
-## 邮件客户端兼容性
-
-| 客户端 | 状态 | 说明 |
-|--------|------|------|
-| Gmail (Chrome) | ✅ | HTML + base64 图片 |
-| Apple Mail | ✅ | RTFD 内嵌图片 |
-| Outlook | ✅ | 行内图片 |
-| Thunderbird | ✅ | HTML |
-
-## 更新
+## 更新与卸载
 
 ```bash
+# 更新
 cd ~/.texmail && git pull && ./build_app.sh
-```
 
-## 卸载
-
-```bash
+# 卸载
 rm -rf ~/.texmail ~/Desktop/Texmail.app ~/.config/latex2clip
 ```
 
@@ -111,8 +70,6 @@ rm -rf ~/.texmail ~/Desktop/Texmail.app ~/.config/latex2clip
 欢迎贡献！请阅读 [CONTRIBUTING.md](CONTRIBUTING.md) 了解规范。
 
 ## 贡献者
-
-感谢每一位为 Texmail 做出贡献的人！
 
 <a href="https://github.com/Franklinwang72">
   <img src="https://github.com/Franklinwang72.png" width="60" height="60" style="border-radius:50%" alt="Franklinwang72" />
