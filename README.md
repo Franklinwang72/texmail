@@ -126,6 +126,21 @@ cd ~/.texmail && git pull && ./build_app.sh
 rm -rf ~/.texmail ~/Desktop/Texmail.app ~/.config/latex2clip
 ```
 
+## Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## Contributors
+
+Thanks to everyone who has contributed to Texmail!
+
+<a href="https://github.com/Franklinwang72">
+  <img src="https://github.com/Franklinwang72.png" width="60" height="60" style="border-radius:50%" alt="Franklinwang72" />
+</a>
+<a href="https://github.com/gengjgg">
+  <img src="https://github.com/gengjgg.png" width="60" height="60" style="border-radius:50%" alt="gengjgg" />
+</a>
+
 ## License
 
 [MIT](./LICENSE)
