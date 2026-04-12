@@ -31,7 +31,7 @@ engine = "auto"
 dpi = 300
 font_size_pt = 14.0
 fg_color = "#000000"
-bg_color = "transparent"
+bg_color = "#FFFFFF"
 
 [output]
 inline_height_em = 1.4
@@ -94,7 +94,7 @@ def _parse_toml(data: dict) -> Config:
             engine=r.get("engine", "auto"), dpi=r.get("dpi", 300),
             font_size_pt=r.get("font_size_pt", 14.0),
             fg_color=r.get("fg_color", "#000000"),
-            bg_color=r.get("bg_color", "transparent"),
+            bg_color=r.get("bg_color", "#FFFFFF"),
         )
     if "output" in data:
         o = data["output"]
