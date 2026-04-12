@@ -51,7 +51,10 @@ if [ ! -f .venv/bin/python ]; then
     "$PYTHON" -m venv .venv
 fi
 echo "  Installing Python dependencies..."
-.venv/bin/pip install -q -e . 2>&1 | tail -1
+if ! .venv/bin/pip install -e . 2>&1; then
+    echo "❌ pip install failed. Check the error above."
+    exit 1
+fi
 
 # ── 3. Generate icon if needed ──
 if [ ! -f resources/latex2clip.icns ]; then
