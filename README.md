@@ -44,7 +44,6 @@ Texmail appears on your Desktop. Double-click to launch.
 
 - **macOS 13+** (Ventura or later)
 - **Python 3.10+** — `brew install python`
-- **Xcode Command Line Tools** *(only for building from source)* — `xcode-select --install`
 - **TeX** *(optional, for complex formulas)* — `brew install --cask mactex-no-gui`
 
 ## Features

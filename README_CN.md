@@ -44,7 +44,6 @@ curl -fsSL https://raw.githubusercontent.com/Franklinwang72/texmail/main/install
 
 - **macOS 13+**（Ventura 及以上）
 - **Python 3.10+** — `brew install python`
-- **Xcode 命令行工具**（仅从源码编译时需要）— `xcode-select --install`
 - **TeX**（可选，用于复杂公式）— `brew install --cask mactex-no-gui`
 
 ## 功能特点
