@@ -16,6 +16,7 @@ from latex2clip.renderer.base import BaseRenderer, RenderedFormula, RenderConfig
 TEX_TEMPLATE = r"""\documentclass[preview,border=2pt]{{standalone}}
 \usepackage{{amsmath,amssymb,amsfonts,mathrsfs}}
 \usepackage{{tikz-cd}}
+\usepackage[all]{{xy}}
 \usepackage{{xcolor}}
 \usepackage{{fontspec}}
 \definecolor{{fgcolor}}{{HTML}}{{{fg_hex}}}
