@@ -80,6 +80,9 @@ rm -rf ~/.texmail ~/Desktop/Texmail.app ~/.config/latex2clip
 <a href="https://github.com/edoublemanda">
   <img src="https://github.com/edoublemanda.png" width="60" height="60" style="border-radius:50%" alt="edoublemanda" />
 </a>
+<a href="https://github.com/claude-ai">
+  <img src="https://github.com/claude-ai.png" width="60" height="60" style="border-radius:50%" alt="Claude" />
+</a>
 
 ## 开源协议
 
