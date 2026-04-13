@@ -71,8 +71,8 @@ private func configPath() -> String {
     return dir + "/config.toml"
 }
 
-private func readConfig() -> String {
-    (try? String(contentsOfFile: configPath(), encoding: .utf8)) ?? ""
+private func readConfig() -> String? {
+    try? String(contentsOfFile: configPath(), encoding: .utf8)
 }
 
 private func writeConfig(_ content: String) {
@@ -85,12 +85,14 @@ private func writeConfig(_ content: String) {
 
 func saveHotkey(key: String, modifiers: [String]) {
     configQueue.sync {
-        var content = readConfig()
+        guard var content = readConfig() else {
+            print("[Texmail] Cannot read config, skipping hotkey save")
+            return
+        }
 
         let safeKey = key.replacingOccurrences(of: "\"", with: "")
         let modsStr = modifiers.map { "\"\($0)\"" }.joined(separator: ", ")
 
-        // Replace only the key= and modifiers= lines, preserving comments
         if content.contains("[hotkey]") {
             if let range = content.range(of: #"key\s*=\s*\"[^\"]*\""#, options: .regularExpression) {
                 content.replaceSubrange(range, with: "key = \"\(safeKey)\"")
@@ -108,16 +110,17 @@ func saveHotkey(key: String, modifiers: [String]) {
 
 func saveFontSize(_ size: Double) {
     configQueue.sync {
-        var content = readConfig()
+        guard var content = readConfig() else {
+            print("[Texmail] Cannot read config, skipping font size save")
+            return
+        }
         if let range = content.range(of: #"font_size_pt\s*=\s*[\d.]+"#, options: .regularExpression) {
             content.replaceSubrange(range, with: "font_size_pt = \(size)")
         } else if content.contains("[render]") {
-            // [render] section exists but no font_size_pt line — append it
             if let idx = content.range(of: "[render]")?.upperBound {
                 content.insert(contentsOf: "\nfont_size_pt = \(size)", at: idx)
             }
         } else {
-            // No [render] section at all — create it
             content += "\n[render]\nfont_size_pt = \(size)\n"
         }
         writeConfig(content)
