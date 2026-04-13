@@ -64,7 +64,8 @@ curl -fsSL https://raw.githubusercontent.com/Franklinwang72/texmail/main/install
 
 ```bash
 # 更新
-cd ~/.texmail && git pull && ./build_app.sh
+rm -rf ~/.texmail ~/Desktop/Texmail.app
+curl -fsSL https://raw.githubusercontent.com/Franklinwang72/texmail/main/install.sh | bash
 
 # 卸载
 rm -rf ~/.texmail ~/Desktop/Texmail.app ~/.config/latex2clip

@@ -64,7 +64,8 @@ Settings can be changed in the app window. For advanced options, edit `~/.config
 
 ```bash
 # Update
-cd ~/.texmail && git pull && ./build_app.sh
+rm -rf ~/.texmail ~/Desktop/Texmail.app
+curl -fsSL https://raw.githubusercontent.com/Franklinwang72/texmail/main/install.sh | bash
 
 # Uninstall
 rm -rf ~/.texmail ~/Desktop/Texmail.app ~/.config/latex2clip
