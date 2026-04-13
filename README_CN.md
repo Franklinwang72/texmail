@@ -12,6 +12,12 @@
   <a href="LICENSE" target="_blank">
     <img alt="MIT License" src="https://img.shields.io/github/license/Franklinwang72/texmail.svg?style=flat-square" />
   </a>
+  <a href="https://github.com/Franklinwang72/texmail/stargazers">
+    <img alt="Stars" src="https://img.shields.io/github/stars/Franklinwang72/texmail?style=flat-square" />
+  </a>
+  <a href="https://github.com/Franklinwang72/texmail">
+    <img alt="Clones" src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FFranklinwang72%2Ftexmail%2Ftraffic%2Fclones.json&query=%24.count&label=clones&style=flat-square&color=blue" />
+  </a>
   <img alt="Swift" src="https://img.shields.io/badge/-Swift-F05138?style=flat-square&logo=swift&logoColor=white" />
   <img alt="Python" src="https://img.shields.io/badge/-Python-3776AB?style=flat-square&logo=python&logoColor=white" />
   <img alt="macOS" src="https://img.shields.io/badge/-macOS%2013+-black?style=flat-square&logo=apple&logoColor=white" />
