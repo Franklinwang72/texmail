@@ -14,7 +14,8 @@ from latex2clip.parser import MathMode
 from latex2clip.renderer.base import BaseRenderer, RenderedFormula, RenderConfig
 
 TEX_TEMPLATE = r"""\documentclass[preview,border=2pt]{{standalone}}
-\usepackage{{amsmath,amssymb,amsfonts,mathrsfs}}
+\usepackage{{amsmath,amssymb,amsfonts,mathrsfs,mathtools}}
+\usepackage{{stmaryrd,bbm}}
 \usepackage{{tikz-cd}}
 \usepackage[all]{{xy}}
 \usepackage{{xcolor}}
