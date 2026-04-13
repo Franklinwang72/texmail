@@ -56,14 +56,6 @@ class MatplotlibRenderer(BaseRenderer):
         # Collapse newlines — mathtext silently renders raw code if \n is present
         latex = " ".join(latex.split())
 
-        # Pre-validate: try parsing with mathtext before rendering
-        # If it fails, raise immediately so fallback kicks in
-        from matplotlib import mathtext as _mt
-        try:
-            _mt.MathTextParser("agg").parse(f"${latex}$", dpi=72, prop=None)
-        except (ValueError, RuntimeError, TypeError) as e:
-            raise ValueError(f"mathtext cannot parse: {e}") from e
-
         fontsize = config.font_size_pt
         if mode == MathMode.DISPLAY:
             fontsize *= 1.2
@@ -78,7 +70,7 @@ class MatplotlibRenderer(BaseRenderer):
         text_obj = fig.text(0, 0, f"${latex}$", fontsize=fontsize,
                             color=config.fg_color, usetex=False)
 
-        # Get descent from the renderer for accurate baseline
+        # Force render — if mathtext can't parse, this raises immediately
         fig.canvas.draw()
         renderer = fig.canvas.get_renderer()
         _, _, descent = renderer.get_text_width_height_descent(
