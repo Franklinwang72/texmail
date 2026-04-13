@@ -172,30 +172,75 @@
             margin-top: 36px;
             display: inline-flex;
             align-items: center;
-            gap: 14px;
+            gap: 0;
             background: var(--card);
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 14px 24px;
+            overflow: hidden;
+            max-width: 90vw;
         }
         .install-bar code {
             font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
             font-size: 0.85em;
             color: var(--accent-3);
+            padding: 14px 20px;
+            white-space: nowrap;
+            overflow-x: auto;
+            display: block;
         }
         .copy-btn {
-            background: transparent;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 6px 10px;
-            color: var(--text-secondary);
+            background: var(--border);
+            border: none;
+            border-left: 1px solid var(--border);
+            padding: 14px 14px;
             cursor: pointer;
-            font-size: 0.8em;
-            transition: color 0.15s, border-color 0.15s;
-            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.2s;
         }
-        .copy-btn:hover { color: var(--text); border-color: #444; }
-        .copy-btn.copied { color: var(--accent-3); border-color: var(--accent-3); }
+        .copy-btn:hover { background: #2a2a2f; }
+        .copy-btn svg {
+            width: 18px; height: 18px;
+            stroke: var(--text-secondary);
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .copy-btn:hover svg { stroke: var(--text); }
+
+        /* Ripple animation on copy */
+        .copy-btn .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--accent-3);
+            opacity: 0;
+            transform: scale(0);
+            pointer-events: none;
+        }
+        .copy-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        @keyframes ripple {
+            0% { transform: scale(0); opacity: 0.35; }
+            100% { transform: scale(4); opacity: 0; }
+        }
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(52,211,153,0.4); }
+            70% { box-shadow: 0 0 0 12px rgba(52,211,153,0); }
+            100% { box-shadow: 0 0 0 0 rgba(52,211,153,0); }
+        }
+        .copy-btn.copied {
+            animation: pulse-glow 0.6s ease-out;
+        }
+        .copy-btn.copied svg {
+            stroke: var(--accent-3);
+            transform: scale(1.15);
+        }
 
         /* ── Demo ── */
         .demo {
@@ -368,15 +413,32 @@
             </div>
             <div class="install-bar">
                 <code id="install-cmd">curl -fsSL https://raw.githubusercontent.com/Franklinwang72/texmail/main/install.sh | bash</code>
-                <button class="copy-btn" onclick="copyCmd()">Copy</button>
+                <button class="copy-btn" onclick="copyCmd(event)">
+                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                </button>
             </div>
             <script>
-            function copyCmd() {
+            function copyCmd(e) {
                 navigator.clipboard.writeText(document.getElementById('install-cmd').textContent);
-                const btn = document.querySelector('.copy-btn');
-                btn.textContent = 'Copied';
+                const btn = e.currentTarget;
+
+                // Ripple effect from click point
+                const ripple = document.createElement('span');
+                ripple.className = 'ripple';
+                const rect = btn.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+                ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+                ripple.style.animation = 'ripple 0.5s ease-out';
+                btn.appendChild(ripple);
+
+                // Glow + icon scale
                 btn.classList.add('copied');
-                setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    ripple.remove();
+                }, 800);
             }
             </script>
         </section>
