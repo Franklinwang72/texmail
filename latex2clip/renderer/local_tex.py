@@ -46,22 +46,35 @@ _TEXLIVE_GLOBS = [
 
 
 def _find_tex_engine() -> str | None:
-    """Find xelatex (preferred) or pdflatex, searching common macOS locations."""
-    # Prefer xelatex for Unicode/CJK support
+    """Find xelatex (preferred) or pdflatex, searching everywhere on macOS."""
     for engine in ["xelatex", "pdflatex"]:
+        # 1. PATH
         found = shutil.which(engine)
         if found:
             return found
+        # 2. Well-known fixed paths
         for d in _TEX_SEARCH_PATHS:
             p = Path(d) / engine
             if p.is_file():
                 return str(p)
+        # 3. TeX Live year directories
         import glob
         for pattern in _TEXLIVE_GLOBS:
             for d in sorted(glob.glob(pattern), reverse=True):
                 p = Path(d) / engine
                 if p.is_file():
                     return str(p)
+        # 4. Last resort: ask macOS Spotlight to find it
+        import subprocess
+        try:
+            result = subprocess.run(
+                ["mdfind", f"kMDItemFSName == '{engine}'"],
+                capture_output=True, text=True, timeout=5)
+            for line in result.stdout.strip().splitlines():
+                if line.endswith(f"/{engine}") and Path(line).is_file():
+                    return line
+        except Exception:
+            pass
     return None
 
 
