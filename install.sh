@@ -117,6 +117,7 @@ rm -rf "$APP"
 cp -R /tmp/texmail-release-extract/Texmail.app "$APP"
 echo -n "$INSTALL_DIR" > "$APP/Contents/Resources/project_dir"
 xattr -cr "$APP" 2>/dev/null || true
+codesign --force --sign - --deep "$APP" 2>/dev/null || true
 rm -rf /tmp/texmail-release.zip /tmp/texmail-release-extract
 
 echo "  ✓ Texmail.app on your Desktop"

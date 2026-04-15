@@ -125,6 +125,7 @@ PLIST
 rm -rf ~/Desktop/Texmail.app
 cp -R "$APP" ~/Desktop/Texmail.app
 xattr -cr ~/Desktop/Texmail.app 2>/dev/null || true
+codesign --force --sign - --deep ~/Desktop/Texmail.app 2>/dev/null || true
 
 echo ""
 echo "╔══════════════════════════════════════╗"
