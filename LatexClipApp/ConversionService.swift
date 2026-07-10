@@ -54,6 +54,16 @@ class ConversionService {
         return result.message
     }
 
+    // Clipboard-only convert with notification (menu bar item)
+    func performClipboardConversion(fontSize: Double) {
+        DispatchQueue.global(qos: .userInitiated).async { [self] in
+            let result = runConvert(fontSize: fontSize)
+            DispatchQueue.main.async {
+                self.showNotification(result.message)
+            }
+        }
+    }
+
     // MARK: - Python subprocess
 
     private func runConvert(fontSize: Double) -> (success: Bool, message: String) {
