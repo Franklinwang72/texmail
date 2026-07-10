@@ -19,7 +19,7 @@ TEX_TEMPLATE = r"""\documentclass[preview,border=2pt]{{standalone}}
 \usepackage{{tikz-cd}}
 \usepackage[all]{{xy}}
 \usepackage{{xcolor}}
-\usepackage{{fontspec}}
+{fontspec_line}
 \definecolor{{fgcolor}}{{HTML}}{{{fg_hex}}}
 \definecolor{{bgcolor}}{{HTML}}{{{bg_hex}}}
 \pagecolor{{bgcolor}}
@@ -95,9 +95,13 @@ class LocalTeXRenderer(BaseRenderer):
         content = f"${latex}$" if mode == MathMode.INLINE else f"\\[ {latex} \\]"
         fontsize = config.font_size_pt
         lineheight = fontsize * 1.2
+        # fontspec requires xelatex/lualatex — it errors out under pdflatex
+        fontspec_line = (r"\usepackage{fontspec}"
+                         if Path(engine).name in ("xelatex", "lualatex") else "")
         tex_source = TEX_TEMPLATE.format(
             fg_hex=fg_hex, bg_hex=bg_hex, content=content,
-            fontsize=fontsize, lineheight=lineheight)
+            fontsize=fontsize, lineheight=lineheight,
+            fontspec_line=fontspec_line)
 
         tex_bin_dir = str(Path(engine).parent)
         import os
@@ -110,7 +114,7 @@ class LocalTeXRenderer(BaseRenderer):
 
             result = subprocess.run(
                 [engine, "-interaction=nonstopmode", "-halt-on-error", "input.tex"],
-                cwd=tmpdir, capture_output=True, timeout=15,
+                cwd=tmpdir, capture_output=True, timeout=config.timeout_s,
                 env=env,
             )
             if result.returncode != 0:
