@@ -1,7 +1,9 @@
 #!/bin/bash
 # Texmail — one-line installer
 # Usage: curl -fsSL https://raw.githubusercontent.com/Franklinwang72/texmail/main/install.sh | bash
-set -e
+# pipefail: without it, a pip/brew failure hidden behind `| tail` would be
+# silently ignored and the installer would report success on a broken install
+set -e -o pipefail
 
 echo ""
 echo "╔══════════════════════════════════════╗"
@@ -29,7 +31,7 @@ if command -v brew &>/dev/null; then
     echo "  ✓ Homebrew"
 else
     echo "  ✗ Homebrew — installing..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || true
     # Add brew to PATH for this session
     if [ -f /opt/homebrew/bin/brew ]; then
         eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -61,7 +63,7 @@ if [ -n "$PYTHON" ]; then
     echo "  ✓ $($PYTHON --version)"
 else
     echo "  ✗ Python 3.10+ — installing via Homebrew..."
-    brew install python 2>&1 | tail -3
+    brew install python 2>&1 | tail -3 || true  # failure handled by re-check below
     # Find the newly installed python
     for p in python3.14 python3.13 python3.12 python3.11 python3.10 python3; do
         if command -v "$p" &>/dev/null; then
@@ -87,7 +89,9 @@ echo "Installing Texmail..."
 # ── 4. Clone or update repo ──
 if [ -d "$INSTALL_DIR" ]; then
     echo "  Updating source..."
-    cd "$INSTALL_DIR" && git pull --quiet
+    # reset --hard instead of pull: a dirty or diverged ~/.texmail must
+    # never abort the installer
+    cd "$INSTALL_DIR" && git fetch --quiet origin main && git reset --hard --quiet origin/main
 else
     echo "  Downloading source..."
     git clone --quiet https://github.com/Franklinwang72/texmail.git "$INSTALL_DIR"
@@ -145,13 +149,21 @@ else
     echo "    Simple formulas work without TeX."
     echo "    Complex formulas (matrices, tikz-cd, CJK) need TeX."
     echo ""
-    read -p "    Install TeX now? (~4GB download) [y/N]: " -n 1 -r
+    # Read from /dev/tty: under `curl | bash` stdin is the script itself,
+    # so a plain `read` would swallow script text instead of user input.
+    # No tty (CI etc.) -> default to No.
+    REPLY=""
+    printf "    Install TeX now? (~4GB download) [y/N]: "
+    read -n 1 -r < /dev/tty 2>/dev/null || REPLY="n"
     echo ""
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo "    Installing MacTeX (this may take a few minutes)..."
-        brew install --cask mactex-no-gui 2>&1 | tail -5
-        eval "$(/usr/libexec/path_helper)" 2>/dev/null || true
-        echo "    ✓ TeX installed"
+        if brew install --cask mactex-no-gui 2>&1 | tail -5; then
+            eval "$(/usr/libexec/path_helper)" 2>/dev/null || true
+            echo "    ✓ TeX installed"
+        else
+            echo "    ⚠ MacTeX install failed. Install manually: brew install --cask mactex-no-gui"
+        fi
     else
         echo "    Skipped. You can install later: brew install --cask mactex-no-gui"
     fi

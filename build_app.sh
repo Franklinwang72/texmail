@@ -69,17 +69,23 @@ mkdir -p "$MACOS" "$RESOURCES"
 
 SDK_PATH=$(xcrun --show-sdk-path)
 
-swiftc -O -parse-as-library \
-    -sdk "$SDK_PATH" \
-    -target arm64-apple-macosx13.0 \
-    -framework SwiftUI \
-    -framework AppKit \
-    -framework Carbon \
-    -framework ApplicationServices \
-    -o "$MACOS/LatexClip" \
-    LatexClipApp/*.swift 2>&1
+# Build a universal binary (arm64 + x86_64) so Intel Macs work too —
+# the released zip is named "-universal" and must actually be universal
+for ARCH in arm64 x86_64; do
+    swiftc -O -parse-as-library \
+        -sdk "$SDK_PATH" \
+        -target "$ARCH-apple-macosx13.0" \
+        -framework SwiftUI \
+        -framework AppKit \
+        -framework Carbon \
+        -framework ApplicationServices \
+        -o "$MACOS/LatexClip-$ARCH" \
+        LatexClipApp/*.swift 2>&1
+done
+lipo -create -output "$MACOS/LatexClip" "$MACOS/LatexClip-arm64" "$MACOS/LatexClip-x86_64"
+rm "$MACOS/LatexClip-arm64" "$MACOS/LatexClip-x86_64"
 
-echo "✓ Compiled"
+echo "✓ Compiled (universal: arm64 + x86_64)"
 
 # ── 5. Assemble .app bundle ──
 echo -n "$PROJECT_DIR" > "$RESOURCES/project_dir"
