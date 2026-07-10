@@ -34,12 +34,12 @@ fg_color = "#000000"
 bg_color = "#FFFFFF"
 
 [output]
-inline_height_em = 1.4
 html_font_size_px = 14
 
 [advanced]
 fallback = true
-timeout_seconds = 10
+# Per-formula TeX compile timeout in seconds (first xelatex run can be slow)
+timeout_seconds = 60
 max_formulas = 50
 preview_dir = "~/Library/Caches/texmail"
 """
@@ -62,16 +62,15 @@ class RenderConfigToml:
 
 @dataclass
 class OutputConfig:
-    inline_height_em: float = 1.4
     html_font_size_px: int = 14
 
 
 @dataclass
 class AdvancedConfig:
     fallback: bool = True
-    timeout_seconds: int = 10
+    timeout_seconds: int = 60
     max_formulas: int = 50
-    preview_dir: str = "/tmp/latex2clip"
+    preview_dir: str = "~/Library/Caches/texmail"
 
 
 @dataclass
@@ -99,16 +98,15 @@ def _parse_toml(data: dict) -> Config:
     if "output" in data:
         o = data["output"]
         cfg.output = OutputConfig(
-            inline_height_em=o.get("inline_height_em", 1.4),
             html_font_size_px=o.get("html_font_size_px", 14),
         )
     if "advanced" in data:
         a = data["advanced"]
         cfg.advanced = AdvancedConfig(
             fallback=a.get("fallback", True),
-            timeout_seconds=a.get("timeout_seconds", 10),
+            timeout_seconds=a.get("timeout_seconds", 60),
             max_formulas=a.get("max_formulas", 50),
-            preview_dir=a.get("preview_dir", "/tmp/latex2clip"),
+            preview_dir=a.get("preview_dir", "~/Library/Caches/texmail"),
         )
     return cfg
 

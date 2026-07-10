@@ -16,7 +16,6 @@ def compose_html(
     segments: list[Segment],
     rendered: dict[int, RenderedFormula],
     font_size_px: int = 14,
-    inline_height_em: float = 1.4,
     dpi: int = 300,
 ) -> str:
     """Build a self-contained HTML fragment (no <html>/<body>).

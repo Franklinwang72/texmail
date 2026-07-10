@@ -39,8 +39,8 @@ def stop():
 
 
 @main.command()
-@click.option("--engine", default="auto", help="Renderer engine")
-def convert(engine: str):
+@click.option("--engine", default=None, help="Renderer engine (default: from config)")
+def convert(engine: str | None):
     """One-shot convert: read clipboard, render, write back."""
     from latex2clip.clipboard import read_plaintext, write_html_and_plain
     from latex2clip.composer import compose_html
@@ -50,6 +50,7 @@ def convert(engine: str):
     from latex2clip.renderer.base import RenderConfig
 
     cfg = load_config()
+    engine = engine or cfg.render.engine
     text = read_plaintext()
     if not text:
         click.echo("Clipboard is empty.", err=True); sys.exit(1)
@@ -58,10 +59,15 @@ def convert(engine: str):
     latex_indices = [i for i, s in enumerate(segments) if isinstance(s, LatexSegment)]
     if not latex_indices:
         click.echo("No LaTeX formulas found in clipboard.", err=True); sys.exit(1)
+    if len(latex_indices) > cfg.advanced.max_formulas:
+        click.echo(f"Too many formulas ({len(latex_indices)} > "
+                   f"{cfg.advanced.max_formulas}, see max_formulas in config).",
+                   err=True); sys.exit(1)
 
     render_cfg = RenderConfig(
         dpi=cfg.render.dpi, font_size_pt=cfg.render.font_size_pt,
-        fg_color=cfg.render.fg_color, bg_color=cfg.render.bg_color)
+        fg_color=cfg.render.fg_color, bg_color=cfg.render.bg_color,
+        timeout_s=cfg.advanced.timeout_seconds)
     rendered = {}
     for idx in latex_indices:
         seg = segments[idx]
@@ -103,7 +109,8 @@ def preview(input_text: str | None):
     segments = parse(text)
     render_cfg = RenderConfig(
         dpi=cfg.render.dpi, font_size_pt=cfg.render.font_size_pt,
-        fg_color=cfg.render.fg_color, bg_color=cfg.render.bg_color)
+        fg_color=cfg.render.fg_color, bg_color=cfg.render.bg_color,
+        timeout_s=cfg.advanced.timeout_seconds)
     rendered = {}
     for i, seg in enumerate(segments):
         if isinstance(seg, LatexSegment):
@@ -111,7 +118,7 @@ def preview(input_text: str | None):
                 seg.content, seg.mode, render_cfg, engine=cfg.render.engine)
 
     html = compose_html(segments, rendered, dpi=cfg.render.dpi)
-    preview_dir = Path(cfg.advanced.preview_dir)
+    preview_dir = Path(cfg.advanced.preview_dir).expanduser()
     preview_dir.mkdir(parents=True, exist_ok=True)
     path = preview_dir / "preview.html"
     path.write_text(

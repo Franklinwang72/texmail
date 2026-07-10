@@ -42,6 +42,7 @@ class Daemon:
         render_cfg = RenderConfig(
             dpi=cfg.render.dpi, font_size_pt=cfg.render.font_size_pt,
             fg_color=cfg.render.fg_color, bg_color=cfg.render.bg_color,
+            timeout_s=cfg.advanced.timeout_seconds,
         )
         rendered: dict[int, object] = {}
         for idx in latex_indices:
@@ -62,7 +63,7 @@ class Daemon:
             log.warning("RTFD build failed, writing HTML + plain only")
             write_html_and_plain(html, text)
 
-        preview_dir = Path(cfg.advanced.preview_dir)
+        preview_dir = Path(cfg.advanced.preview_dir).expanduser()
         preview_dir.mkdir(parents=True, exist_ok=True)
         preview_path = preview_dir / "preview.html"
         preview_path.write_text(

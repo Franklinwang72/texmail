@@ -257,14 +257,15 @@ class _AppDelegate(NSObject):
             if not indices:
                 self.status_label.setStringValue_("\u274c \u672a\u68c0\u6d4b\u5230\u516c\u5f0f"); return
             rc = RenderConfig(dpi=cfg.render.dpi, font_size_pt=fs,
-                              fg_color=cfg.render.fg_color, bg_color=cfg.render.bg_color)
+                              fg_color=cfg.render.fg_color, bg_color=cfg.render.bg_color,
+                              timeout_s=cfg.advanced.timeout_seconds)
             rendered = {}
             for idx in indices:
                 seg = segments[idx]
                 rendered[idx] = render_with_fallback(seg.content, seg.mode, rc,
                     engine=cfg.render.engine, fallback=cfg.advanced.fallback)
             html = compose_html(segments, rendered, font_size_px=int(fs),
-                                inline_height_em=cfg.output.inline_height_em)
+                                dpi=cfg.render.dpi)
             try:
                 from latex2clip.clipboard import build_rtfd, write_rich
                 rtfd = build_rtfd(segments, rendered, dpi=cfg.render.dpi)
