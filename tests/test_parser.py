@@ -136,3 +136,41 @@ class TestParser:
         result = parse("see $x^2$ here")
         seg = [s for s in result if isinstance(s, LatexSegment)][0]
         assert seg.original == "$x^2$"
+
+    # --- False-positive regressions ---
+
+    def test_dollar_amounts_are_not_math(self):
+        """'$5 ... $10' must not be parsed as a formula (Pandoc rules)."""
+        result = parse("The coffee costs $5 and the cake costs $10 in total.")
+        assert all(isinstance(s, TextSegment) for s in result)
+
+    def test_dollar_amount_range_not_math(self):
+        result = parse("expect $5-$10 per unit")
+        assert all(isinstance(s, TextSegment) for s in result)
+
+    def test_spaced_dollars_not_math(self):
+        """'$ x $' (spaces inside) is rejected, like Pandoc."""
+        result = parse("weird $ x $ spacing")
+        assert all(isinstance(s, TextSegment) for s in result)
+
+    def test_paren_after_inline_math_untouched(self):
+        """Prose parentheses after \\(...\\) must not be swallowed."""
+        result = parse("We have \\(a\\) (see note) and \\(b\\).")
+        latex_segs = [s for s in result if isinstance(s, LatexSegment)]
+        assert [s.content for s in latex_segs] == ["a", "b"]
+        text = "".join(s.content for s in result if isinstance(s, TextSegment))
+        assert "(see note)" in text
+
+    def test_citation_after_display_math_untouched(self):
+        """A citation like [1] after \\[...\\] must survive verbatim."""
+        result = parse("Consider \\[x^2\\] [1] as shown.")
+        latex_segs = [s for s in result if isinstance(s, LatexSegment)]
+        assert [s.content for s in latex_segs] == ["x^2"]
+        text = "".join(s.content for s in result if isinstance(s, TextSegment))
+        assert "[1] as shown." in text
+
+    def test_missing_backslash_between_inlines_still_fixed(self):
+        """\\)( directly opening a real formula is still auto-fixed."""
+        result = parse("\\(a\\)(b\\)")
+        latex_segs = [s for s in result if isinstance(s, LatexSegment)]
+        assert [s.content for s in latex_segs] == ["a", "b"]

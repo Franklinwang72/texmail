@@ -34,6 +34,11 @@ Segment = Union[TextSegment, LatexSegment]
 #   4. $...$    — inline math (TeX shorthand)
 #
 # Must match longer delimiters before shorter ones.
+#
+# For $...$ we follow Pandoc's rules to avoid treating dollar amounts
+# ("costs $5 and $10") as math: the opening $ must not be followed by
+# whitespace, the closing $ must not be preceded by whitespace and must
+# not be immediately followed by a digit.
 PATTERN = re.compile(
     r'\\\['              # \[ opening
     r'(.*?)'             # content (group 1)
@@ -47,19 +52,21 @@ PATTERN = re.compile(
     r'(.+?)'             # content (group 3)
     r'(?<!\\)\$\$'       # $$ closing
     r'|'
-    r'(?<!\\)\$'         # $ opening
+    r'(?<!\\)\$(?!\s)'   # $ opening, must not be followed by whitespace
     r'([^\$\n]+?)'       # content (group 4, no bare $, no newline)
-    r'(?<!\\)\$',        # $ closing
+    r'(?<![\s\\])\$(?!\d)',  # $ closing: no whitespace before, no digit after
     re.DOTALL,
 )
 
 
 def _preprocess(text: str) -> str:
     """Fix common delimiter issues before parsing."""
-    # \][ → \]\[ (missing backslash between consecutive display formulas)
-    text = re.sub(r'\\\]\s*\[(?!\\)', r'\\]\n\\[', text)
-    # \)( → \)\( (same for inline)
-    text = re.sub(r'\\\)\s*\((?!\\)', r'\\)\n\\(', text)
+    # \][ → \]\[ (missing backslash between consecutive display formulas).
+    # Only rewrite when the "[" really opens a formula that is later closed
+    # by \] — otherwise prose like "\[x\] [1]" (a citation) would be broken.
+    text = re.sub(r'\\\]\s*\[(?=[^\[\]]*\\\])', r'\\]\n\\[', text)
+    # \)( → \)\( (same for inline; "\(a\) (see note)" must stay untouched)
+    text = re.sub(r'\\\)\s*\((?=[^()]*\\\))', r'\\)\n\\(', text)
     return text
 
 
