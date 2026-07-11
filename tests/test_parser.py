@@ -174,3 +174,9 @@ class TestParser:
         result = parse("\\(a\\)(b\\)")
         latex_segs = [s for s in result if isinstance(s, LatexSegment)]
         assert [s.content for s in latex_segs] == ["a", "b"]
+
+    def test_empty_formula_kept_as_text(self):
+        """Empty delimiters must not produce an empty LatexSegment."""
+        for text in ["\\(\\)", "$$ $$", "a \\[ \\] b"]:
+            result = parse(text)
+            assert all(isinstance(s, TextSegment) for s in result), text

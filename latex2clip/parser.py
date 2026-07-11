@@ -91,42 +91,23 @@ def parse(text: str) -> list[Segment]:
         if m.start() > last_end:
             segments.append(TextSegment(text[last_end : m.start()]))
 
-        if m.group(1) is not None:
-            # \[...\] display math
+        if m.group(1) is not None:      # \[...\] display math
+            raw, mode = m.group(1), MathMode.DISPLAY
+        elif m.group(2) is not None:    # \(...\) inline math
+            raw, mode = m.group(2), MathMode.INLINE
+        elif m.group(3) is not None:    # $$...$$ display math
+            raw, mode = m.group(3), MathMode.DISPLAY
+        else:                           # $...$ inline math
+            raw, mode = m.group(4), MathMode.INLINE
+
+        content = _clean_latex(raw)
+        if content:
             segments.append(
-                LatexSegment(
-                    content=_clean_latex(m.group(1)),
-                    mode=MathMode.DISPLAY,
-                    original=m.group(0),
-                )
-            )
-        elif m.group(2) is not None:
-            # \(...\) inline math
-            segments.append(
-                LatexSegment(
-                    content=_clean_latex(m.group(2)),
-                    mode=MathMode.INLINE,
-                    original=m.group(0),
-                )
-            )
-        elif m.group(3) is not None:
-            # $$...$$ display math
-            segments.append(
-                LatexSegment(
-                    content=_clean_latex(m.group(3)),
-                    mode=MathMode.DISPLAY,
-                    original=m.group(0),
-                )
-            )
+                LatexSegment(content=content, mode=mode, original=m.group(0)))
         else:
-            # $...$ inline math
-            segments.append(
-                LatexSegment(
-                    content=_clean_latex(m.group(4)),
-                    mode=MathMode.INLINE,
-                    original=m.group(0),
-                )
-            )
+            # Empty formula ("\(\)", "$$ $$") — keep as literal text instead
+            # of sending "" to a renderer that is guaranteed to fail on it
+            segments.append(TextSegment(m.group(0)))
         last_end = m.end()
 
     if last_end < len(text):
