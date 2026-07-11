@@ -60,6 +60,13 @@ Texmail appears on your Desktop. Double-click to launch.
 
 Settings can be changed in the app window. For advanced options, edit `~/.config/latex2clip/config.toml`.
 
+## Troubleshooting
+
+- **App won't open / "damaged" warning** — you probably downloaded the zip from the Releases page directly. Always install with the `install.sh` command above: it sets up the Python environment the app needs and clears the quarantine flag.
+- **Hotkey does nothing** — grant Accessibility permission: System Settings → Privacy & Security → Accessibility → enable Texmail. After reinstalling/updating, remove Texmail from that list and add it back (macOS ties the permission to the old app signature).
+- **Formulas render as red error boxes** — update Texmail (see below); older versions required a TeX installation even for simple formulas. Complex formulas (matrices, `tikz-cd`, CJK) still need TeX: `brew install --cask mactex-no-gui`.
+- **Nothing happens on paste** — the conversion may still be running; wait for the "Converted" notification before pressing Cmd+V.
+
 ## Update & Uninstall
 
 ```bash

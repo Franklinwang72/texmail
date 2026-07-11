@@ -16,8 +16,10 @@ struct TexmailApp: App {
             Divider()
 
             Button("Convert Clipboard") {
+                // Clipboard-only: must NOT simulate Cmd+C/Cmd+V — that would
+                // copy from and paste into whatever app happens to have focus
                 let cfg = loadConfig()
-                appDelegate.conversionService.performFullConversion(fontSize: cfg.fontSizePt) { _ in }
+                appDelegate.conversionService.performClipboardConversion(fontSize: cfg.fontSizePt)
             }
 
             let cfg = loadConfig()

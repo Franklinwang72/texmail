@@ -34,6 +34,11 @@ Segment = Union[TextSegment, LatexSegment]
 #   4. $...$    — inline math (TeX shorthand)
 #
 # Must match longer delimiters before shorter ones.
+#
+# For $...$ we follow Pandoc's rules to avoid treating dollar amounts
+# ("costs $5 and $10") as math: the opening $ must not be followed by
+# whitespace, the closing $ must not be preceded by whitespace and must
+# not be immediately followed by a digit.
 PATTERN = re.compile(
     r'\\\['              # \[ opening
     r'(.*?)'             # content (group 1)
@@ -47,19 +52,21 @@ PATTERN = re.compile(
     r'(.+?)'             # content (group 3)
     r'(?<!\\)\$\$'       # $$ closing
     r'|'
-    r'(?<!\\)\$'         # $ opening
+    r'(?<!\\)\$(?!\s)'   # $ opening, must not be followed by whitespace
     r'([^\$\n]+?)'       # content (group 4, no bare $, no newline)
-    r'(?<!\\)\$',        # $ closing
+    r'(?<![\s\\])\$(?!\d)',  # $ closing: no whitespace before, no digit after
     re.DOTALL,
 )
 
 
 def _preprocess(text: str) -> str:
     """Fix common delimiter issues before parsing."""
-    # \][ → \]\[ (missing backslash between consecutive display formulas)
-    text = re.sub(r'\\\]\s*\[(?!\\)', r'\\]\n\\[', text)
-    # \)( → \)\( (same for inline)
-    text = re.sub(r'\\\)\s*\((?!\\)', r'\\)\n\\(', text)
+    # \][ → \]\[ (missing backslash between consecutive display formulas).
+    # Only rewrite when the "[" really opens a formula that is later closed
+    # by \] — otherwise prose like "\[x\] [1]" (a citation) would be broken.
+    text = re.sub(r'\\\]\s*\[(?=[^\[\]]*\\\])', r'\\]\n\\[', text)
+    # \)( → \)\( (same for inline; "\(a\) (see note)" must stay untouched)
+    text = re.sub(r'\\\)\s*\((?=[^()]*\\\))', r'\\)\n\\(', text)
     return text
 
 
@@ -84,42 +91,23 @@ def parse(text: str) -> list[Segment]:
         if m.start() > last_end:
             segments.append(TextSegment(text[last_end : m.start()]))
 
-        if m.group(1) is not None:
-            # \[...\] display math
+        if m.group(1) is not None:      # \[...\] display math
+            raw, mode = m.group(1), MathMode.DISPLAY
+        elif m.group(2) is not None:    # \(...\) inline math
+            raw, mode = m.group(2), MathMode.INLINE
+        elif m.group(3) is not None:    # $$...$$ display math
+            raw, mode = m.group(3), MathMode.DISPLAY
+        else:                           # $...$ inline math
+            raw, mode = m.group(4), MathMode.INLINE
+
+        content = _clean_latex(raw)
+        if content:
             segments.append(
-                LatexSegment(
-                    content=_clean_latex(m.group(1)),
-                    mode=MathMode.DISPLAY,
-                    original=m.group(0),
-                )
-            )
-        elif m.group(2) is not None:
-            # \(...\) inline math
-            segments.append(
-                LatexSegment(
-                    content=_clean_latex(m.group(2)),
-                    mode=MathMode.INLINE,
-                    original=m.group(0),
-                )
-            )
-        elif m.group(3) is not None:
-            # $$...$$ display math
-            segments.append(
-                LatexSegment(
-                    content=_clean_latex(m.group(3)),
-                    mode=MathMode.DISPLAY,
-                    original=m.group(0),
-                )
-            )
+                LatexSegment(content=content, mode=mode, original=m.group(0)))
         else:
-            # $...$ inline math
-            segments.append(
-                LatexSegment(
-                    content=_clean_latex(m.group(4)),
-                    mode=MathMode.INLINE,
-                    original=m.group(0),
-                )
-            )
+            # Empty formula ("\(\)", "$$ $$") — keep as literal text instead
+            # of sending "" to a renderer that is guaranteed to fail on it
+            segments.append(TextSegment(m.group(0)))
         last_end = m.end()
 
     if last_end < len(text):

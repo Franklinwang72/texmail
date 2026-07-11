@@ -15,6 +15,7 @@ class RenderConfig:
     fg_color: str = "#000000"
     bg_color: str = "#FFFFFF"
     padding_px: int = 4
+    timeout_s: int = 60  # per-formula TeX compile timeout
 
 
 @dataclass
@@ -23,6 +24,7 @@ class RenderedFormula:
     width_px: int
     height_px: int
     baseline_px: int
+    ok: bool = True  # False = this is an error placeholder, not the formula
 
 
 class BaseRenderer(ABC):

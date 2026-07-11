@@ -37,7 +37,6 @@ _SHIMS: list[tuple[re.Pattern, object]] = [
     (re.compile(r"\\textbf\s*\{([^}]*)\}"),       lambda m: rf"\mathbf{{{m.group(1)}}}"),
     (re.compile(r"\\textit\s*\{([^}]*)\}"),       lambda m: rf"\mathit{{{m.group(1)}}}"),
     (re.compile(r"\\boxed\s*\{([^}]*)\}"),        lambda m: m.group(1)),
-    (re.compile(r"\\mathbb\s*\{([^}]*)\}"),       lambda m: rf"\mathcal{{{m.group(1)}}}"),
 ]
 
 
@@ -62,26 +61,33 @@ class MatplotlibRenderer(BaseRenderer):
 
         fig = plt.figure(figsize=(0.01, 0.01))
         is_transparent = config.bg_color == "transparent"
-        if is_transparent:
-            fig.patch.set_alpha(0.0)
-        else:
-            fig.patch.set_facecolor(config.bg_color)
-
-        text_obj = fig.text(0, 0, f"${latex}$", fontsize=fontsize,
-                            color=config.fg_color, usetex=False)
-
-        # Force render — if mathtext can't parse, this raises immediately
-        fig.canvas.draw()
-        renderer = fig.canvas.get_renderer()
-        _, _, descent = renderer.get_text_width_height_descent(
-            f"${latex}$", text_obj.get_fontproperties(), ismath="TeX")
-        descent_px = int(descent * config.dpi / 72)
-
         buf = BytesIO()
-        fig.savefig(buf, format="png", dpi=config.dpi,
-                    bbox_inches="tight", pad_inches=0.02,
-                    transparent=is_transparent)
-        plt.close(fig)
+        try:
+            if is_transparent:
+                fig.patch.set_alpha(0.0)
+            else:
+                fig.patch.set_facecolor(config.bg_color)
+
+            text_obj = fig.text(0, 0, f"${latex}$", fontsize=fontsize,
+                                color=config.fg_color, usetex=False)
+
+            # Force render — if mathtext can't parse, this raises immediately
+            fig.canvas.draw()
+            renderer = fig.canvas.get_renderer()
+            # ismath=True = mathtext. NEVER pass "TeX" here: that routes the
+            # measurement through external LaTeX, which breaks every render
+            # on machines without a TeX installation.
+            _, _, descent = renderer.get_text_width_height_descent(
+                f"${latex}$", text_obj.get_fontproperties(), ismath=True)
+            descent_px = int(descent * config.dpi / 72)
+
+            fig.savefig(buf, format="png", dpi=config.dpi,
+                        bbox_inches="tight", pad_inches=0.02,
+                        transparent=is_transparent)
+        finally:
+            # Always release the figure — pyplot holds a global reference,
+            # so a parse failure would otherwise leak it (daemon mode grows)
+            plt.close(fig)
 
         buf.seek(0)
         img = Image.open(buf)

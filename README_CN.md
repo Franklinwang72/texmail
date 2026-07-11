@@ -60,6 +60,13 @@ curl -fsSL https://raw.githubusercontent.com/Franklinwang72/texmail/main/install
 
 设置可在 app 窗口中修改。高级选项请编辑 `~/.config/latex2clip/config.toml`。
 
+## 常见问题排查
+
+- **App 打不开 / 提示"已损坏"** — 你可能是直接从 Releases 页面下载了 zip。请务必用上面的 `install.sh` 命令安装:它会配置 App 依赖的 Python 环境并清除隔离标记。
+- **快捷键没反应** — 需要授予辅助功能权限:系统设置 → 隐私与安全性 → 辅助功能 → 勾选 Texmail。重装或更新后,请先把 Texmail 从列表中移除再重新添加(macOS 会把权限绑定到旧的应用签名上)。
+- **公式渲染成红色错误图片** — 请更新 Texmail(见下方);旧版本即使渲染简单公式也错误地依赖了 TeX。复杂公式(矩阵、`tikz-cd`、中文)仍需安装 TeX:`brew install --cask mactex-no-gui`。
+- **按 Cmd+V 没粘贴出结果** — 转换可能还在进行,请等出现"已转换"通知后再粘贴。
+
 ## 更新与卸载
 
 ```bash

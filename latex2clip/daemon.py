@@ -42,6 +42,7 @@ class Daemon:
         render_cfg = RenderConfig(
             dpi=cfg.render.dpi, font_size_pt=cfg.render.font_size_pt,
             fg_color=cfg.render.fg_color, bg_color=cfg.render.bg_color,
+            timeout_s=cfg.advanced.timeout_seconds,
         )
         rendered: dict[int, object] = {}
         for idx in latex_indices:
@@ -62,7 +63,7 @@ class Daemon:
             log.warning("RTFD build failed, writing HTML + plain only")
             write_html_and_plain(html, text)
 
-        preview_dir = Path(cfg.advanced.preview_dir)
+        preview_dir = Path(cfg.advanced.preview_dir).expanduser()
         preview_dir.mkdir(parents=True, exist_ok=True)
         preview_path = preview_dir / "preview.html"
         preview_path.write_text(
@@ -77,7 +78,8 @@ class Daemon:
 
         cfg = self.config_manager.config
 
-        # Hotkey may fail without Accessibility permission — non-fatal
+        # Hotkey registration can fail (combo already taken by another app,
+        # unknown key in config, Carbon errors) — degrade to menu-bar only
         try:
             hotkey = HotkeyListener(
                 key=cfg.hotkey.key, modifiers=cfg.hotkey.modifiers,
@@ -85,11 +87,11 @@ class Daemon:
             hotkey.start()
             self.config_manager.on_change(
                 lambda c: hotkey.update_hotkey(c.hotkey.key, c.hotkey.modifiers))
-        except PermissionError:
-            log.warning("Accessibility permission not granted — hotkey disabled. "
-                        "Use menu bar Convert Now instead.")
+        except Exception as e:
+            log.warning("Hotkey registration failed (%s) — hotkey disabled. "
+                        "Use menu bar Convert Now instead.", e)
             send_notification("Texmail",
-                              "Grant Accessibility permission for hotkey support")
+                              "Hotkey unavailable — use the menu bar to convert")
 
         self.config_manager.start_watching()
         menubar = LatexClipMenuBar(self)
