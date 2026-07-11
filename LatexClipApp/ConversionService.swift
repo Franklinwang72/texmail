@@ -1,4 +1,5 @@
 import AppKit
+import ApplicationServices
 import Foundation
 
 class ConversionService {
@@ -29,11 +30,38 @@ class ConversionService {
     // MARK: - Full pipeline: copy → convert → paste
 
     func performFullConversion(fontSize: Double, completion: @escaping (String) -> Void) {
+        // Synthetic Cmd+C/Cmd+V need Accessibility; without it the events
+        // are silently dropped and we would convert stale clipboard content
+        // and paste it over the user's selection.
+        guard AXIsProcessTrusted() else {
+            let msg = "❌ Grant Accessibility permission: System Settings → Privacy & Security → Accessibility"
+            showNotification(msg)
+            completion(msg)
+            return
+        }
+
         // 1. Copy selection (must be on main thread for CGEvent)
+        let pasteboard = NSPasteboard.general
+        let countBefore = pasteboard.changeCount
         simulateKey(code: 0x08, flags: .maskCommand) // Cmd+C
 
-        // 2. Wait for clipboard, then convert on background thread
-        DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.35) { [self] in
+        // 2. Wait until the copy actually lands (changeCount bumps),
+        //    then convert on a background thread
+        DispatchQueue.global(qos: .userInitiated).async { [self] in
+            let deadline = Date().addingTimeInterval(1.5)
+            while pasteboard.changeCount == countBefore && Date() < deadline {
+                Thread.sleep(forTimeInterval: 0.05)
+            }
+            guard pasteboard.changeCount != countBefore else {
+                DispatchQueue.main.async {
+                    let msg = "❌ Nothing copied — select some text first"
+                    self.showNotification(msg)
+                    completion(msg)
+                }
+                return
+            }
+            // Give the source app a moment to finish writing all flavors
+            Thread.sleep(forTimeInterval: 0.1)
             let result = runConvert(fontSize: fontSize)
 
             // 3. Paste back on main thread
@@ -110,7 +138,7 @@ class ConversionService {
         }
         if process.isRunning {
             process.terminate()
-            return (false, "❌ 转换超时")
+            return (false, "❌ Conversion timed out")
         }
 
         outPipe.fileHandleForReading.readabilityHandler = nil
@@ -123,16 +151,19 @@ class ConversionService {
             let msg = stdout.trimmingCharacters(in: .whitespacesAndNewlines)
             if msg.contains("Converted") {
                 let n = msg.components(separatedBy: " ").compactMap { Int($0) }.first ?? 0
-                return (true, "✅ 已转换 \(n) 个公式")
+                if msg.contains("failed") {
+                    return (true, "⚠️ Converted \(n) formula(s), some failed (red boxes)")
+                }
+                return (true, "✅ Converted \(n) formula(s)")
             }
-            return (true, "✅ 转换完成")
+            return (true, "✅ Done")
         } else {
             let errMsg = (stderr + stdout).trimmingCharacters(in: .whitespacesAndNewlines)
             if errMsg.contains("No LaTeX") || errMsg.contains("not found") {
-                return (false, "❌ 未检测到公式")
+                return (false, "❌ No formulas found")
             }
-            if errMsg.contains("empty") || errMsg.contains("为空") {
-                return (false, "❌ 剪贴板为空")
+            if errMsg.contains("empty") {
+                return (false, "❌ Clipboard is empty")
             }
             return (false, "❌ \(String(errMsg.prefix(100)))")
         }
@@ -153,10 +184,12 @@ class ConversionService {
     // MARK: - Notification
 
     private func showNotification(_ message: String) {
-        // Escape quotes and backslashes to prevent osascript injection
+        // Escape quotes and backslashes to prevent osascript injection;
+        // AppleScript string literals cannot span lines, so flatten newlines
         let safe = message
             .replacingOccurrences(of: "\\", with: "\\\\")
             .replacingOccurrences(of: "\"", with: "\\\"")
+            .replacingOccurrences(of: "\n", with: " ")
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
         process.arguments = ["-e", "display notification \"\(safe)\" with title \"Texmail\""]

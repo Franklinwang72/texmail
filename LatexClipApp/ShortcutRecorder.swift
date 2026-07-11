@@ -26,6 +26,13 @@ class ShortcutCaptureView: NSView {
             return
         }
 
+        // Reject plain-Cmd combos the app itself synthesizes or macOS owns:
+        // registering Cmd+C/Cmd+V would make our own simulated copy/paste
+        // re-trigger the hotkey in an endless conversion loop.
+        if flags == .command && ["C", "V", "X", "A", "Q", "W"].contains(keyName) {
+            return
+        }
+
         var mods: [String] = []
         if flags.contains(.command) { mods.append("cmd") }
         if flags.contains(.shift) { mods.append("shift") }
