@@ -27,8 +27,10 @@ def install() -> None:
     <array>
         <string>{exe_path}</string>
         <string>start</string>
-        <string>--daemon</string>
     </array>
+    <!-- No `--daemon` here: launchd must track the process itself.
+         A self-forking command exits immediately, so KeepAlive would
+         respawn it forever, piling up orphaned daemons. -->
     <key>RunAtLoad</key>
     <true/>
     <key>KeepAlive</key>

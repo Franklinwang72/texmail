@@ -24,6 +24,7 @@ class RenderedFormula:
     width_px: int
     height_px: int
     baseline_px: int
+    ok: bool = True  # False = this is an error placeholder, not the formula
 
 
 class BaseRenderer(ABC):

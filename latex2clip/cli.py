@@ -87,7 +87,12 @@ def convert(engine: str | None):
     except Exception:
         write_html_and_plain(html, text)
 
-    click.echo(f"Converted {len(latex_indices)} formula(s). Cmd+V to paste.")
+    failed = sum(1 for r in rendered.values() if not r.ok)
+    if failed:
+        click.echo(f"Converted {len(latex_indices)} formula(s), "
+                   f"{failed} failed (shown as red boxes). Cmd+V to paste.")
+    else:
+        click.echo(f"Converted {len(latex_indices)} formula(s). Cmd+V to paste.")
 
 
 @main.command()
@@ -144,16 +149,12 @@ def doctor():
         except ImportError:
             checks.append((label, False))
 
-    checks.append(("pdflatex" if shutil.which("pdflatex")
-                   else "pdflatex (optional, for local TeX)", bool(shutil.which("pdflatex"))))
-    checks.append(("node" if shutil.which("node")
-                   else "node (optional, for KaTeX)", bool(shutil.which("node"))))
-
-    try:
-        from latex2clip.hotkey import check_accessibility
-        checks.append(("Accessibility permission", check_accessibility()))
-    except Exception:
-        checks.append(("Accessibility permission", False))
+    # Use the same search the renderer uses (PATH + known TeX locations),
+    # not a bare which(): doctor must agree with what rendering actually does
+    from latex2clip.renderer.local_tex import _find_tex_engine
+    tex = _find_tex_engine()
+    checks.append((f"TeX engine ({tex})" if tex
+                   else "TeX engine (optional, for complex formulas)", bool(tex)))
 
     from latex2clip.config import CONFIG_PATH
     checks.append((f"Config file at {CONFIG_PATH}", CONFIG_PATH.exists()))

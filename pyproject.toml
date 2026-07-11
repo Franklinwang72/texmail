@@ -21,6 +21,7 @@ dependencies = [
     "rumps>=0.4",
     "watchdog>=3.0",
     "click>=8.0",
+    "tomli>=2.0; python_version < '3.11'",
 ]
 
 [project.optional-dependencies]

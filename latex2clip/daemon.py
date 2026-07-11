@@ -78,7 +78,8 @@ class Daemon:
 
         cfg = self.config_manager.config
 
-        # Hotkey may fail without Accessibility permission — non-fatal
+        # Hotkey registration can fail (combo already taken by another app,
+        # unknown key in config, Carbon errors) — degrade to menu-bar only
         try:
             hotkey = HotkeyListener(
                 key=cfg.hotkey.key, modifiers=cfg.hotkey.modifiers,
@@ -86,11 +87,11 @@ class Daemon:
             hotkey.start()
             self.config_manager.on_change(
                 lambda c: hotkey.update_hotkey(c.hotkey.key, c.hotkey.modifiers))
-        except PermissionError:
-            log.warning("Accessibility permission not granted — hotkey disabled. "
-                        "Use menu bar Convert Now instead.")
+        except Exception as e:
+            log.warning("Hotkey registration failed (%s) — hotkey disabled. "
+                        "Use menu bar Convert Now instead.", e)
             send_notification("Texmail",
-                              "Grant Accessibility permission for hotkey support")
+                              "Hotkey unavailable — use the menu bar to convert")
 
         self.config_manager.start_watching()
         menubar = LatexClipMenuBar(self)
